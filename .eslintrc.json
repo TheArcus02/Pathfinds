@@ -32,12 +32,13 @@
   },
   "ignorePatterns": [
     "**/*.js",
-    "**/*,json",
+    "**/*.json",
     "node_modules",
     "public",
     "coverage",
     "dist",
-    "build"
+    "build",
+    "**/*.cjs"
   ],
   "rules": {
     "react/function-component-definition": [
