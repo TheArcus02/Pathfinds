@@ -1,7 +1,14 @@
 import './App.css';
+import Board from './components/Board';
+import ConfigMenu from './components/ConfigMenu';
 
 const App = () => {
-  return <h1 className='text-3xl font-bold underline'>Hello world!</h1>;
+  return (
+    <div className='bg-zinc-700 min-h-screen flex w-full'>
+      <ConfigMenu />
+      <Board />
+    </div>
+  );
 };
 
 export default App;
