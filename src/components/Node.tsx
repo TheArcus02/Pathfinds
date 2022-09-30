@@ -5,11 +5,22 @@ interface INodeComponent {
 }
 
 const Node: React.FC<INodeComponent> = ({ node }) => {
+  const getClasses = () => {
+    if (node.isStart) {
+      return 'bg-green-600';
+    }
+    if (node.isFinish) {
+      return 'bg-red-500';
+    }
+    if (node.isWall) {
+      return 'bg-orange-400';
+    }
+    return '';
+  };
   return (
     <div
-      className={`border border-solid border-slate-500 p-2 ${
-        node.isStart ? 'bg-green-600' : node.isFinish && 'bg-red-500'
-      }`}
+      id={`${node.row}-${node.col}`}
+      className={`border border-solid border-slate-500 p-2 ${getClasses()}`}
     />
   );
 };

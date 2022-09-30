@@ -33,12 +33,11 @@ const updateUnvisitedNodes = (neightbors: INode[], currentNode: INode) => {
 const dijkstraAlgorithm = (
   nodes: INode[][],
   startNodePosition: number[],
-  targetNodePosition: number[],
   // eslint-disable-next-line consistent-return
 ) => {
-  if (nodes.length === 0) return false;
+  const visitedNodesInOrder: INode[] = [];
+  if (nodes.length === 0) return visitedNodesInOrder;
 
-  const visitedNodesInOrder = [];
   const nodesCopy = nodes.slice();
   nodesCopy[startNodePosition[0]][startNodePosition[1]].distance = 0;
   let unvisitedNodes = nodesCopy.flatMap((node) => node);
@@ -61,5 +60,4 @@ const dijkstraAlgorithm = (
     }
   }
 };
-
 export default dijkstraAlgorithm;
