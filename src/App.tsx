@@ -47,13 +47,12 @@ const App = () => {
     const animateShortestPath = (shortestPath: INode[]) => {
       shortestPath.forEach((node, index) => {
         setTimeout(() => {
-          document
-            .getElementById(`${node.row}-${node.col}`)
-            ?.classList.add('bg-indigo-700');
-        }, 10 * index);
+          const domElement = document.getElementById(`${node.row}-${node.col}`);
+          domElement?.classList.remove('bg-emerald-500');
+          domElement?.classList.add('bg-indigo-700');
+        }, 50 * index);
       });
     };
-
     if (spreadAnimationEnded) {
       const finishNode = nodes[endNode[0]][endNode[1]];
       if (finishNode.previousNode) {
@@ -72,14 +71,15 @@ const App = () => {
       nodesVisitedInOrder.forEach((node, index) => {
         newNodesGrid[node.row][node.col] = node;
         setTimeout(() => {
-          if (!node.isStart && !node.isFinish) {
-            document
-              .getElementById(`${node.row}-${node.col}`)
-              ?.classList.add('bg-emerald-500');
-          }
-          if (index === nodesVisitedInOrder.length - 1)
+          const domElement = document.getElementById(`${node.row}-${node.col}`);
+
+          if (node.isStart) domElement?.classList.remove('bg-green-600');
+          if (node.isFinish) domElement?.classList.remove('bg-red-500');
+          domElement?.classList.add('bg-emerald-500', 'animate-visited');
+          if (index === nodesVisitedInOrder.length - 1) {
             setSpreadAnimationEnded(true);
-        }, 10 * index);
+          }
+        }, 50 * index);
       });
       setNodes(newNodesGrid);
     }
