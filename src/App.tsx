@@ -48,14 +48,15 @@ const App = () => {
       shortestPath.forEach((node, index) => {
         setTimeout(() => {
           const domElement = document.getElementById(`${node.row}-${node.col}`);
-          domElement?.classList.remove('bg-emerald-500');
           domElement?.classList.add('bg-indigo-700');
         }, 50 * index);
       });
     };
+
     if (spreadAnimationEnded) {
       const finishNode = nodes[endNode[0]][endNode[1]];
       if (finishNode.previousNode) {
+        console.log('spread animation ends');
         const nodesInShortestPath = getShortestPath(finishNode);
         animateShortestPath(nodesInShortestPath);
         setSpreadAnimationEnded(false);
@@ -70,20 +71,15 @@ const App = () => {
 
       nodesVisitedInOrder.forEach((node, index) => {
         newNodesGrid[node.row][node.col] = node;
-        setTimeout(() => {
-          const domElement = document.getElementById(`${node.row}-${node.col}`);
-
-          if (node.isStart) domElement?.classList.remove('bg-green-600');
-          if (node.isFinish) domElement?.classList.remove('bg-red-500');
-          domElement?.classList.add('bg-emerald-500', 'animate-visited');
-          if (index === nodesVisitedInOrder.length - 1) {
-            setSpreadAnimationEnded(true);
-          }
-        }, 50 * index);
       });
       setNodes(newNodesGrid);
+      console.log('spread animation starts');
     }
   };
+
+  useEffect(() => {
+    console.log(nodes);
+  }, [nodes]);
 
   const clearBoard = () => {
     setNodes(initialNodes);
@@ -91,8 +87,8 @@ const App = () => {
 
   return (
     <div className='bg-zinc-700 min-h-screen flex w-full'>
-      <ConfigMenu callAlgorithm={animateDijkstra} />
-      <Board nodes={nodes.slice()} />
+      <ConfigMenu callAlgorithm={animateDijkstra} clearBoard={clearBoard} />
+      <Board nodes={nodes} setAnimationEnded={setSpreadAnimationEnded} />
     </div>
   );
 };
