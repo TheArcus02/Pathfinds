@@ -13,7 +13,7 @@ const App = () => {
   // const [cols, setCols] = useState(60);
   // const [rows, setRows] = useState(50);
   const [startNode, setStartNode] = useState<Array<number>>([10, 15]);
-  const [endNode, setEndNode] = useState<Array<number>>([11, 20]);
+  const [endNode, setEndNode] = useState<Array<number>>([20, 40]);
   const [spreadAnimationEnded, setSpreadAnimationEnded] = useState(false);
 
   useEffect(() => {
@@ -27,6 +27,7 @@ const App = () => {
         isVisited: false,
         isWall: false,
         previousNode: null,
+        isPath: false,
       };
       return node;
     };
@@ -44,22 +45,19 @@ const App = () => {
   }, [endNode, startNode]);
 
   useEffect(() => {
-    const animateShortestPath = (shortestPath: INode[]) => {
-      shortestPath.forEach((node, index) => {
-        setTimeout(() => {
-          const domElement = document.getElementById(`${node.row}-${node.col}`);
-          domElement?.classList.add('bg-indigo-700');
-        }, 50 * index);
-      });
-    };
-
     if (spreadAnimationEnded) {
       const finishNode = nodes[endNode[0]][endNode[1]];
       if (finishNode.previousNode) {
-        console.log('spread animation ends');
         const nodesInShortestPath = getShortestPath(finishNode);
-        animateShortestPath(nodesInShortestPath);
-        setSpreadAnimationEnded(false);
+
+        const newGrid = cloneDeep(nodes);
+
+        nodesInShortestPath.forEach((node) => {
+          const nodeCopy = node;
+          nodeCopy.isPath = true;
+          newGrid[node.row][node.col] = nodeCopy;
+        });
+        setNodes(newGrid);
       }
     }
   }, [spreadAnimationEnded, nodes, endNode]);
@@ -69,14 +67,15 @@ const App = () => {
     if (nodesVisitedInOrder?.length) {
       const newNodesGrid = cloneDeep(nodes);
 
-      nodesVisitedInOrder.forEach((node, index) => {
+      nodesVisitedInOrder.forEach((node) => {
         newNodesGrid[node.row][node.col] = node;
       });
       setNodes(newNodesGrid);
-      console.log('spread animation starts');
     }
   };
 
+  // ! delete on production
+  // printing current nodes
   useEffect(() => {
     console.log(nodes);
   }, [nodes]);

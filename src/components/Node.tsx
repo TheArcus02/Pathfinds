@@ -11,13 +11,20 @@ const Node: React.FC<INodeComponent> = ({ node, setAnimationEnded }) => {
 
   useEffect(() => {
     let timeout: number | null = null;
-    if (node.isVisited) {
+    if (node.isPath) {
+      timeout = setTimeout(() => {
+        setClasses('bg-indigo-700');
+        if (node.isFinish) {
+          setAnimationEnded(false);
+        }
+      }, 50 * node.distance);
+    } else if (node.isVisited) {
       timeout = setTimeout(() => {
         setClasses('bg-emerald-500 animate-visited');
         if (node.isFinish) {
           setAnimationEnded(true);
         }
-      }, 150 * node.distance);
+      }, 10 * node.distance);
     } else if (node.isFinish) {
       setClasses('bg-red-500');
     } else if (node.isWall) {
@@ -33,7 +40,15 @@ const Node: React.FC<INodeComponent> = ({ node, setAnimationEnded }) => {
         clearTimeout(timeout);
       }
     };
-  }, [node, setAnimationEnded]);
+  }, [
+    node.isFinish,
+    node.isVisited,
+    node.isPath,
+    node.isWall,
+    node.isStart,
+    node.distance,
+    setAnimationEnded,
+  ]);
 
   return (
     <div

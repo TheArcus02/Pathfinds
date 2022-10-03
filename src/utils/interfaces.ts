@@ -7,4 +7,5 @@ export interface INode {
   isVisited: boolean;
   isWall: boolean;
   previousNode: INode | null;
+  isPath: boolean;
 }
