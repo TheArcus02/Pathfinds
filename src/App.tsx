@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, filter } from 'lodash';
 import dijkstraAlgorithm from './algorithms/dijkstra';
 import './App.css';
 import Board from './components/Board';
 import ConfigMenu from './components/ConfigMenu';
 import { INode } from './utils/interfaces';
 import getShortestPath from './algorithms/shortestPath';
+import Node from './components/Node';
 
 const App = () => {
   const [initialNodes, setInitialNodes] = useState<INode[][]>([]);
@@ -15,6 +16,7 @@ const App = () => {
   const [startNode, setStartNode] = useState<Array<number>>([10, 15]);
   const [endNode, setEndNode] = useState<Array<number>>([20, 40]);
   const [spreadAnimationEnded, setSpreadAnimationEnded] = useState(false);
+  const [mouseIsPressed, setMouseIsPressed] = useState(false);
 
   useEffect(() => {
     const generateNode = (col: number, row: number) => {
@@ -84,10 +86,36 @@ const App = () => {
     setNodes(initialNodes);
   };
 
+  const handleWallToggle = (row: number, col: number) => {
+    setNodes((prev) => {
+      const prevCopy = cloneDeep(prev);
+      prevCopy[row][col].isWall = true;
+      return [...prevCopy];
+    });
+  };
+
   return (
     <div className='bg-zinc-700 min-h-screen flex w-full'>
       <ConfigMenu callAlgorithm={animateDijkstra} clearBoard={clearBoard} />
-      <Board nodes={nodes} setAnimationEnded={setSpreadAnimationEnded} />
+      <div className='w-full'>
+        <div
+          className='grid grid-cols-[repeat(50,_minmax(0,_1fr))] min-h-full'
+          role='grid'
+        >
+          {nodes.map((row) =>
+            row.map((node) => (
+              <Node
+                node={node}
+                key={node.col + node.row}
+                setAnimationEnded={setSpreadAnimationEnded}
+                toggleWall={handleWallToggle}
+                mouseIsPressed={mouseIsPressed}
+                setMouseIsPressed={setMouseIsPressed}
+              />
+            )),
+          )}
+        </div>
+      </div>
     </div>
   );
 };

@@ -4,9 +4,18 @@ import { INode } from '../utils/interfaces';
 interface INodeComponent {
   node: INode;
   setAnimationEnded: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleWall: (row: number, col: number) => void;
+  mouseIsPressed: boolean;
+  setMouseIsPressed: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Node: React.FC<INodeComponent> = ({ node, setAnimationEnded }) => {
+const Node: React.FC<INodeComponent> = ({
+  node,
+  setAnimationEnded,
+  toggleWall,
+  mouseIsPressed,
+  setMouseIsPressed,
+}) => {
   const [classes, setClasses] = useState('');
 
   useEffect(() => {
@@ -50,10 +59,29 @@ const Node: React.FC<INodeComponent> = ({ node, setAnimationEnded }) => {
     setAnimationEnded,
   ]);
 
+  const handleMouseDown = (row: number, col: number) => {
+    toggleWall(row, col);
+    setMouseIsPressed(true);
+  };
+
+  const handleMouseEnter = (row: number, col: number) => {
+    if (mouseIsPressed) toggleWall(row, col);
+  };
+
+  const handleMouseUp = () => {
+    setMouseIsPressed(false);
+  };
+
   return (
     <div
       id={`${node.row}-${node.col}`}
+      aria-label={`${node.row}-${node.col}`}
       className={`border border-solid border-slate-500 p-2 ${classes}`}
+      onMouseDown={() => handleMouseDown(node.row, node.col)}
+      onMouseEnter={() => handleMouseEnter(node.row, node.col)}
+      onMouseUp={() => handleMouseUp()}
+      role='gridcell'
+      tabIndex={0}
     />
   );
 };
