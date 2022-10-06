@@ -8,7 +8,6 @@ export interface INode {
   isWall: boolean;
   previousNode: INode | null;
   isPath: boolean;
-  hovered: boolean;
 }
 
 export interface DraggableNode {

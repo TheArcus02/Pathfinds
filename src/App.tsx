@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { cloneDeep } from 'lodash';
-import { useCallback } from 'react';
 import dijkstraAlgorithm from './algorithms/dijkstra';
 import './App.css';
 import ConfigMenu from './components/ConfigMenu';
@@ -47,7 +46,6 @@ const App = () => {
         isWall: false,
         previousNode: null,
         isPath: false,
-        hovered: false,
       };
       return node;
     };
@@ -172,7 +170,7 @@ const App = () => {
   };
 
   return (
-    <div className='bg-zinc-700 min-h-screen flex w-full'>
+    <div className='bg-zinc-700 min-h-screen'>
       <ConfigMenu callAlgorithm={animateDijkstra} clearBoard={clearBoard} />
       <div className='w-full'>
         <div
