@@ -46,7 +46,7 @@
       { "namedComponents": "arrow-function" }
     ],
     "react-destructing-assignment": "off",
-    "prettier/prettier": "error",
+    "prettier/prettier": "warn",
     "@typescript-eslint/no-unused-vars": "warn",
     "react/prop-types": 0
   }

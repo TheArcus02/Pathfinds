@@ -19,4 +19,11 @@ export interface DraggableNode {
   };
 }
 
+export type ColAndRow = Pick<INode, 'col' | 'row'>;
+export interface NodesState {
+  nodes: INode[][];
+  startNode: ColAndRow;
+  endNode: ColAndRow;
+}
+
 export type DraggableElements = 'startNode' | 'endNode';

@@ -130,12 +130,6 @@ const App = () => {
     }
   };
 
-  // ! delete on production
-  // printing current nodes
-  // useEffect(() => {
-  //   console.log(nodes);
-  // }, [nodes]);
-
   const clearBoard = () => {
     setNodes(initialNodes);
   };
