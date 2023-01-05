@@ -6,7 +6,7 @@ import { ColAndRow, INode, NodesState } from '../utils/interfaces';
 import dijkstraAlgorithm from '../algorithms/dijkstra';
 import getShortestPath from '../algorithms/shortestPath';
 
-const START_ROW = 10;
+const START_ROW = 20;
 const START_COL = 15;
 const FINISH_ROW = 20;
 const FINISH_COL = 40;
@@ -106,5 +106,12 @@ export const nodesSlice = createSlice({
   },
 });
 
-// export const { } = nodesSlice.actions;
+export const {
+  clearBoard,
+  changeStart,
+  changeFinish,
+  toggleWall,
+  runDijkstra,
+  setPath,
+} = nodesSlice.actions;
 export default nodesSlice.reducer;

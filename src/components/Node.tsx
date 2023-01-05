@@ -1,33 +1,33 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { VscDebugStart } from 'react-icons/vsc';
 import { CgEditBlackPoint } from 'react-icons/cg';
 import { DraggableElements, INode } from '../utils/interfaces';
+import { setPath, toggleWall } from '../redux/nodesSlice';
 
 interface INodeComponent {
   node: INode;
-  setAnimationEnded: React.Dispatch<React.SetStateAction<boolean>>;
-  toggleWall: (row: number, col: number) => void;
   mouseIsPressed: boolean;
   setMouseIsPressed: React.Dispatch<React.SetStateAction<boolean>>;
+  setDraggedElement: (
+    value: React.SetStateAction<DraggableElements | null>,
+  ) => void;
   handleDrop: (
     e: React.DragEvent<HTMLDivElement>,
     row: number,
     col: number,
   ) => void;
-  setDraggedElement: (
-    value: React.SetStateAction<DraggableElements | null>,
-  ) => void;
 }
 
 const Node: React.FC<INodeComponent> = ({
   node,
-  setAnimationEnded,
-  toggleWall,
   mouseIsPressed,
   setMouseIsPressed,
-  handleDrop,
   setDraggedElement,
+  handleDrop,
 }) => {
+  const dispatch = useDispatch();
+
   const [classes, setClasses] = useState('');
 
   useEffect(() => {
@@ -37,22 +37,17 @@ const Node: React.FC<INodeComponent> = ({
       // setting timeout for animation
       timeout = setTimeout(() => {
         setClasses('bg-indigo-700');
-        // check if animation ended
-        if (node.isFinish) {
-          setAnimationEnded(false);
-        }
       }, 10 * node.distance);
     } else if (node.isVisited) {
       // setting timeout for animation
       timeout = setTimeout(() => {
         setClasses('bg-emerald-500 animate-visited');
-        // check if animation ended
+        // check if animation ended and start animating path
         if (node.isFinish) {
-          setAnimationEnded(true);
+          dispatch(setPath());
         }
       }, 10 * node.distance);
     } else if (node.isStart) {
-      // setting className
       setClasses('bg-green-600');
     } else if (node.isFinish) {
       setClasses('bg-red-500');
@@ -63,9 +58,7 @@ const Node: React.FC<INodeComponent> = ({
     }
 
     return () => {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
+      if (timeout) clearTimeout(timeout);
     };
   }, [
     node.isFinish,
@@ -76,19 +69,19 @@ const Node: React.FC<INodeComponent> = ({
     node.distance,
     node.row,
     node.col,
-    setAnimationEnded,
+    dispatch,
   ]);
 
   const handleMouseDown = (row: number, col: number) => {
     if (!node.isStart && !node.isFinish) {
-      toggleWall(row, col);
+      dispatch(toggleWall({ row, col }));
       setMouseIsPressed(true);
     }
   };
 
   const handleMouseEnter = (row: number, col: number) => {
-    if (!node.isStart && !node.isFinish) {
-      if (mouseIsPressed) toggleWall(row, col);
+    if (!node.isStart && !node.isFinish && mouseIsPressed) {
+      dispatch(toggleWall({ row, col }));
     }
   };
 
