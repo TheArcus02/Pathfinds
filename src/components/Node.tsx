@@ -27,7 +27,7 @@ const Node: React.FC<INodeComponent> = ({
   handleDrop,
 }) => {
   const dispatch = useDispatch();
-
+  const animationSpeed = 80;
   const [classes, setClasses] = useState('');
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const Node: React.FC<INodeComponent> = ({
       // setting timeout for animation
       timeout = setTimeout(() => {
         setClasses('bg-indigo-700');
-      }, 10 * node.distance);
+      }, animationSpeed * node.distance);
     } else if (node.isVisited) {
       // setting timeout for animation
       timeout = setTimeout(() => {
@@ -46,7 +46,7 @@ const Node: React.FC<INodeComponent> = ({
         if (node.isFinish) {
           dispatch(setPath());
         }
-      }, 10 * node.distance);
+      }, animationSpeed * node.distance);
     } else if (node.isStart) {
       setClasses('bg-green-600');
     } else if (node.isFinish) {
@@ -93,7 +93,7 @@ const Node: React.FC<INodeComponent> = ({
     <div
       id={`${node.row}-${node.col}`}
       aria-label={`${node.row}-${node.col}`}
-      className={`border border-solid border-slate-500 p-2 relative ${classes}`}
+      className={`border border-solid border-slate-500 p-3 relative ${classes}`}
       onMouseDown={() => handleMouseDown(node.row, node.col)}
       onMouseEnter={() => handleMouseEnter(node.row, node.col)}
       onMouseUp={() => handleMouseUp()}

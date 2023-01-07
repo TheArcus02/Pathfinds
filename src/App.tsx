@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import ConfigMenu from './components/ConfigMenu';
 import { DraggableElements } from './utils/interfaces';
@@ -11,6 +11,7 @@ import {
   clearBoard,
   runDijkstra,
 } from './redux/nodesSlice';
+import useWindowSize from './hooks/useWindowSize';
 
 const App = () => {
   const nodes = useSelector((state: RootState) => state.nodes.nodes);
@@ -19,6 +20,12 @@ const App = () => {
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
   const [draggedElement, setDraggedElement] =
     useState<DraggableElements | null>(null);
+
+  const windowWidth = useWindowSize();
+
+  useEffect(() => {
+    dispatch(clearBoard());
+  }, [windowWidth, dispatch]);
 
   const handleDrop = (
     e: React.DragEvent<HTMLDivElement>,
@@ -37,22 +44,21 @@ const App = () => {
         clearBoard={() => dispatch(clearBoard())}
       />
       <div className='w-full'>
-        <div
-          className='grid grid-cols-[repeat(50,_minmax(0,_1fr))] min-h-full'
-          role='grid'
-        >
-          {nodes.map((row) =>
-            row.map((node) => (
-              <Node
-                node={node}
-                key={node.col + node.row}
-                handleDrop={handleDrop}
-                mouseIsPressed={mouseIsPressed}
-                setMouseIsPressed={setMouseIsPressed}
-                setDraggedElement={setDraggedElement}
-              />
-            )),
-          )}
+        <div className='flex flex-col items-center'>
+          {nodes.map((row) => (
+            <div className='flex'>
+              {row.map((node) => (
+                <Node
+                  node={node}
+                  key={node.col + node.row}
+                  handleDrop={handleDrop}
+                  mouseIsPressed={mouseIsPressed}
+                  setMouseIsPressed={setMouseIsPressed}
+                  setDraggedElement={setDraggedElement}
+                />
+              ))}
+            </div>
+          ))}
         </div>
       </div>
     </div>
