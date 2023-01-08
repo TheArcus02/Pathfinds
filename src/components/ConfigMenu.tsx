@@ -1,8 +1,9 @@
 import { TbMathFunction } from 'react-icons/tb';
 import { RiToolsFill } from 'react-icons/ri';
 import { VscRunAll } from 'react-icons/vsc';
-import { FaRegHourglass } from 'react-icons/fa';
+import { FaRegHourglass, FaEraser, FaWeightHanging } from 'react-icons/fa';
 import { MdClearAll } from 'react-icons/md';
+import { GiBrickWall } from 'react-icons/gi';
 
 interface IConfigMenu {
   callAlgorithm: () => void;
@@ -11,6 +12,8 @@ interface IConfigMenu {
 
 const ConfigMenu: React.FC<IConfigMenu> = ({ callAlgorithm, clearBoard }) => {
   const selectedAlgo = 'dijkstra';
+  const selectedTool = 'wall';
+
   return (
     <div className='py-7 px-4 bg-zinc-900 w-full flex justify-center'>
       <div className='grid grid-cols-3 w-full max-w-screen-2xl'>
@@ -26,7 +29,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({ callAlgorithm, clearBoard }) => {
               className={`text-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none ${
                 selectedAlgo === 'dijkstra'
                   ? 'bg-sky-500   hover:cursor-default'
-                  : 'bg-emerald-400 hover:bg-emerald-500 '
+                  : 'bg-sky-700 hover:bg-sky-600'
               }`}
             >
               Dijskstra
@@ -35,7 +38,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({ callAlgorithm, clearBoard }) => {
               type='button'
               className={`text-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none ${
                 selectedAlgo === 'astar'
-                  ? 'bg-emerald-500 hover:cursor-default'
+                  ? 'bg-sky-500 hover:cursor-default'
                   : 'bg-sky-700 hover:bg-sky-600'
               }`}
             >
@@ -45,7 +48,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({ callAlgorithm, clearBoard }) => {
               type='button'
               className={`text-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none ${
                 selectedAlgo === 'dfs'
-                  ? 'bg-emerald-500 hover:cursor-default'
+                  ? 'bg-sky-500 hover:cursor-default'
                   : 'bg-sky-700 hover:bg-sky-600'
               }`}
             >
@@ -55,7 +58,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({ callAlgorithm, clearBoard }) => {
               type='button'
               className={`text-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none ${
                 selectedAlgo === 'bfs'
-                  ? 'bg-emerald-500 hover:cursor-default'
+                  ? 'bg-sky-500 hover:cursor-default'
                   : 'bg-sky-700 hover:bg-sky-600'
               }`}
             >
@@ -67,6 +70,38 @@ const ConfigMenu: React.FC<IConfigMenu> = ({ callAlgorithm, clearBoard }) => {
           <div className='flex items-center mb-3'>
             <RiToolsFill className='text-gray-100 mr-1 text-2xl' />
             <h3 className='text-xl text-gray-100 font-medium'>Tools</h3>
+          </div>
+          <div className='grid grid-cols-3 gap-3'>
+            <div
+              className={`flex items-center gap-2 text-gray-100 text-sm font-medium px-5 py-2.5 rounded-lg ${
+                selectedTool === 'wall'
+                  ? 'bg-zinc-700'
+                  : 'hover:bg-zinc-800 hover:cursor-pointer'
+              }`}
+            >
+              <GiBrickWall size='23px' className='text-gray-100' />
+              Walls
+            </div>
+            <div
+              className={`flex items-center gap-2 text-gray-100 text-sm font-medium px-5 py-2.5 rounded-lg ${
+                selectedTool === 'weight'
+                  ? 'bg-zinc-700'
+                  : 'hover:bg-zinc-800 hover:cursor-pointer'
+              }`}
+            >
+              <FaWeightHanging size='23px' className='text-gray-100' />
+              Weight
+            </div>
+            <div
+              className={`flex items-center gap-2 text-gray-100 text-sm font-medium px-5 py-2.5 rounded-lg ${
+                selectedTool === 'eraser'
+                  ? 'bg-zinc-700'
+                  : 'hover:bg-zinc-800 hover:cursor-pointer'
+              }`}
+            >
+              <FaEraser size='23px' className='text-gray-100' />
+              Eraser
+            </div>
           </div>
         </div>
         <div className='px-6'>
