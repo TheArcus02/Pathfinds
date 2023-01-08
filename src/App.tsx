@@ -9,7 +9,9 @@ import {
   changeFinish,
   changeStart,
   clearBoard,
+  clearPath,
   runDijkstra,
+  setPath,
 } from './redux/nodesSlice';
 import useWindowSize from './hooks/useWindowSize';
 
@@ -20,6 +22,7 @@ const App = () => {
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
   const [draggedElement, setDraggedElement] =
     useState<DraggableElements | null>(null);
+  const [canRun, setCanRun] = useState(true);
 
   const windowWidth = useWindowSize();
 
@@ -37,11 +40,28 @@ const App = () => {
     else if (draggedElement === 'endNode') dispatch(changeFinish({ col, row }));
   };
 
+  const handleCallAlgorithm = () => {
+    setCanRun(false);
+    dispatch(runDijkstra());
+  };
+
+  const handleClearBoard = () => {
+    dispatch(clearBoard());
+    setCanRun(true);
+  };
+
+  const handleClearPath = () => {
+    dispatch(clearPath());
+    setCanRun(true);
+  };
+
   return (
     <div className='bg-zinc-800 min-h-screen'>
       <ConfigMenu
-        callAlgorithm={() => dispatch(runDijkstra())}
-        clearBoard={() => dispatch(clearBoard())}
+        callAlgorithm={handleCallAlgorithm}
+        clearBoard={handleClearBoard}
+        clearPath={handleClearPath}
+        canRun={canRun}
       />
       <div className='w-full'>
         <div className='flex flex-col items-center'>

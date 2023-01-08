@@ -8,9 +8,16 @@ import { GiBrickWall } from 'react-icons/gi';
 interface IConfigMenu {
   callAlgorithm: () => void;
   clearBoard: () => void;
+  clearPath: () => void;
+  canRun: boolean;
 }
 
-const ConfigMenu: React.FC<IConfigMenu> = ({ callAlgorithm, clearBoard }) => {
+const ConfigMenu: React.FC<IConfigMenu> = ({
+  callAlgorithm,
+  clearBoard,
+  clearPath,
+  canRun,
+}) => {
   const selectedAlgo = 'dijkstra';
   const selectedTool = 'wall';
 
@@ -111,7 +118,10 @@ const ConfigMenu: React.FC<IConfigMenu> = ({ callAlgorithm, clearBoard }) => {
           </div>
           <button
             type='button'
-            className='text-black bg-green-400 hover:bg-green-500 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none '
+            disabled={!canRun}
+            className={`text-black bg-green-400  font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none ${
+              canRun ? 'hover:bg-green-500' : 'bg-gray-400'
+            }`}
             onClick={() => callAlgorithm()}
           >
             <div className='flex items-center'>
@@ -122,11 +132,21 @@ const ConfigMenu: React.FC<IConfigMenu> = ({ callAlgorithm, clearBoard }) => {
           <button
             type='button'
             className='text-black bg-zinc-200 hover:bg-zinc-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none '
+            onClick={() => clearPath()}
+          >
+            <div className='flex items-center'>
+              <MdClearAll className='text-lg mr-1' />
+              Clear Path
+            </div>
+          </button>
+          <button
+            type='button'
+            className='text-black bg-zinc-200 hover:bg-zinc-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none '
             onClick={() => clearBoard()}
           >
             <div className='flex items-center'>
               <MdClearAll className='text-lg mr-1' />
-              Clear
+              Clear Board
             </div>
           </button>
         </div>

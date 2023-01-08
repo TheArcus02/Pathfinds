@@ -110,6 +110,17 @@ export const nodesSlice = createSlice({
         });
       }
     },
+
+    clearPath: (state) => {
+      const { nodes } = state;
+      nodes.forEach((row) =>
+        row.forEach((node) => {
+          node.isPath = false;
+          node.isVisited = false;
+          node.distance = Infinity;
+        }),
+      );
+    },
   },
 });
 
@@ -120,5 +131,6 @@ export const {
   toggleWall,
   runDijkstra,
   setPath,
+  clearPath,
 } = nodesSlice.actions;
 export default nodesSlice.reducer;
