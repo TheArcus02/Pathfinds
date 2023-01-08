@@ -1,6 +1,7 @@
 import { TbMathFunction } from 'react-icons/tb';
 import { RiToolsFill } from 'react-icons/ri';
 import { VscRunAll } from 'react-icons/vsc';
+import { AiOutlineClear } from 'react-icons/ai';
 import { FaRegHourglass, FaEraser, FaWeightHanging } from 'react-icons/fa';
 import { MdClearAll } from 'react-icons/md';
 import { GiBrickWall } from 'react-icons/gi';
@@ -33,7 +34,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
             {/* TODO map over avaliable algorithms */}
             <button
               type='button'
-              className={`text-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none ${
+              className={`text-gray-100 ease-in duration-150 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none ${
                 selectedAlgo === 'dijkstra'
                   ? 'bg-sky-500   hover:cursor-default'
                   : 'bg-sky-700 hover:bg-sky-600'
@@ -43,7 +44,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
             </button>
             <button
               type='button'
-              className={`text-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none ${
+              className={`text-gray-100 ease-in duration-150 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none ${
                 selectedAlgo === 'astar'
                   ? 'bg-sky-500 hover:cursor-default'
                   : 'bg-sky-700 hover:bg-sky-600'
@@ -53,7 +54,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
             </button>
             <button
               type='button'
-              className={`text-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none ${
+              className={`text-gray-100 ease-in duration-150 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none ${
                 selectedAlgo === 'dfs'
                   ? 'bg-sky-500 hover:cursor-default'
                   : 'bg-sky-700 hover:bg-sky-600'
@@ -63,7 +64,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
             </button>
             <button
               type='button'
-              className={`text-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none ${
+              className={`text-gray-100 ease-in duration-150 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none ${
                 selectedAlgo === 'bfs'
                   ? 'bg-sky-500 hover:cursor-default'
                   : 'bg-sky-700 hover:bg-sky-600'
@@ -80,7 +81,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
           </div>
           <div className='grid grid-cols-3 gap-3'>
             <div
-              className={`flex items-center gap-2 text-gray-100 text-sm font-medium px-5 py-2.5 rounded-lg ${
+              className={`flex items-center gap-2 ease-in duration-150 text-gray-100 text-sm font-medium px-5 py-2.5 rounded-lg ${
                 selectedTool === 'wall'
                   ? 'bg-zinc-700'
                   : 'hover:bg-zinc-800 hover:cursor-pointer'
@@ -90,7 +91,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
               Walls
             </div>
             <div
-              className={`flex items-center gap-2 text-gray-100 text-sm font-medium px-5 py-2.5 rounded-lg ${
+              className={`flex items-center gap-2 ease-in duration-150 text-gray-100 text-sm font-medium px-5 py-2.5 rounded-lg ${
                 selectedTool === 'weight'
                   ? 'bg-zinc-700'
                   : 'hover:bg-zinc-800 hover:cursor-pointer'
@@ -100,7 +101,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
               Weight
             </div>
             <div
-              className={`flex items-center gap-2 text-gray-100 text-sm font-medium px-5 py-2.5 rounded-lg ${
+              className={`flex items-center gap-2 ease-in duration-150 text-gray-100 text-sm font-medium px-5 py-2.5 rounded-lg ${
                 selectedTool === 'eraser'
                   ? 'bg-zinc-700'
                   : 'hover:bg-zinc-800 hover:cursor-pointer'
@@ -116,39 +117,41 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
             <FaRegHourglass className='text-gray-100 mr-1 text-xl' />
             <h3 className='text-xl text-gray-100 font-medium'>Actions</h3>
           </div>
-          <button
-            type='button'
-            disabled={!canRun}
-            className={`text-black bg-green-400  font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none ${
-              canRun ? 'hover:bg-green-500' : 'bg-gray-400'
-            }`}
-            onClick={() => callAlgorithm()}
-          >
-            <div className='flex items-center'>
-              <VscRunAll className='text-lg mr-1' />
-              Run
-            </div>
-          </button>
-          <button
-            type='button'
-            className='text-black bg-zinc-200 hover:bg-zinc-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none '
-            onClick={() => clearPath()}
-          >
-            <div className='flex items-center'>
-              <MdClearAll className='text-lg mr-1' />
-              Clear Path
-            </div>
-          </button>
-          <button
-            type='button'
-            className='text-black bg-zinc-200 hover:bg-zinc-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none '
-            onClick={() => clearBoard()}
-          >
-            <div className='flex items-center'>
-              <MdClearAll className='text-lg mr-1' />
-              Clear Board
-            </div>
-          </button>
+          <div className='flex flex-wrap gap-2'>
+            <button
+              type='button'
+              disabled={!canRun}
+              className={`text-black bg-zinc-200 ease-in duration-150  font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none ${
+                canRun ? 'hover:bg-green-400' : 'bg-gray-400'
+              }`}
+              onClick={() => callAlgorithm()}
+            >
+              <div className='flex items-center'>
+                <VscRunAll className='text-lg mr-1' />
+                Run
+              </div>
+            </button>
+            <button
+              type='button'
+              className='text-black bg-zinc-200 ease-in duration-150 hover:bg-amber-600 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none '
+              onClick={() => clearPath()}
+            >
+              <div className='flex items-center'>
+                <AiOutlineClear className='text-lg mr-1' />
+                Clear Path
+              </div>
+            </button>
+            <button
+              type='button'
+              className='text-black bg-zinc-200 ease-in duration-150 hover:bg-red-400 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none '
+              onClick={() => clearBoard()}
+            >
+              <div className='flex items-center'>
+                <MdClearAll className='text-lg mr-1' />
+                Clear Board
+              </div>
+            </button>
+          </div>
         </div>
       </div>
     </div>
