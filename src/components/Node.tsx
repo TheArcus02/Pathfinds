@@ -1,7 +1,9 @@
+/* eslint-disable no-nested-ternary */
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { VscDebugStart } from 'react-icons/vsc';
-import { CgEditBlackPoint } from 'react-icons/cg';
+import { FaFlagCheckered } from 'react-icons/fa';
+import { GiBrickWall } from 'react-icons/gi';
 import { DraggableElements, INode } from '../utils/interfaces';
 import { setPath, toggleWall } from '../redux/nodesSlice';
 
@@ -47,16 +49,9 @@ const Node: React.FC<INodeComponent> = ({
           dispatch(setPath());
         }
       }, animationSpeed * node.distance);
-    } else if (node.isStart) {
-      setClasses('bg-green-600');
-    } else if (node.isFinish) {
-      setClasses('bg-red-500');
-    } else if (node.isWall) {
-      setClasses('bg-orange-400');
     } else {
       setClasses('');
     }
-
     return () => {
       if (timeout) clearTimeout(timeout);
     };
@@ -93,7 +88,7 @@ const Node: React.FC<INodeComponent> = ({
     <div
       id={`${node.row}-${node.col}`}
       aria-label={`${node.row}-${node.col}`}
-      className={`border border-solid border-slate-500 p-3 relative ${classes}`}
+      className={`border border-solid border-slate-600 p-3 relative ${classes}`}
       onMouseDown={() => handleMouseDown(node.row, node.col)}
       onMouseEnter={() => handleMouseEnter(node.row, node.col)}
       onMouseUp={() => handleMouseUp()}
@@ -109,16 +104,29 @@ const Node: React.FC<INodeComponent> = ({
           onDragStart={() => setDraggedElement('startNode')}
           onDragEnd={() => setDraggedElement(null)}
         >
-          <VscDebugStart className='absolute cursor-pointer left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2' />
+          <VscDebugStart
+            size='26px'
+            className='text-white bg-sky-600 absolute cursor-pointer left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
+          />
+        </div>
+      ) : node.isFinish ? (
+        <div
+          draggable
+          onDragStart={() => setDraggedElement('endNode')}
+          onDragEnd={() => setDraggedElement(null)}
+        >
+          <FaFlagCheckered
+            size='26px'
+            className='text-white bg-rose-600 absolute cursor-pointer left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
+          />
         </div>
       ) : (
-        node.isFinish && (
-          <div
-            draggable
-            onDragStart={() => setDraggedElement('endNode')}
-            onDragEnd={() => setDraggedElement(null)}
-          >
-            <CgEditBlackPoint className='absolute cursor-pointer left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2' />
+        node.isWall && (
+          <div>
+            <GiBrickWall
+              size='26px'
+              className='text-orange-500 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
+            />
           </div>
         )
       )}

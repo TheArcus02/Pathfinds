@@ -38,7 +38,7 @@ const App = () => {
   };
 
   return (
-    <div className='bg-zinc-700 min-h-screen'>
+    <div className='bg-zinc-800 min-h-screen'>
       <ConfigMenu
         callAlgorithm={() => dispatch(runDijkstra())}
         clearBoard={() => dispatch(clearBoard())}

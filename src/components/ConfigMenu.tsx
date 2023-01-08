@@ -12,7 +12,7 @@ interface IConfigMenu {
 const ConfigMenu: React.FC<IConfigMenu> = ({ callAlgorithm, clearBoard }) => {
   const selectedAlgo = 'dijkstra';
   return (
-    <div className='py-7 px-4 bg-zinc-800 w-full flex justify-center'>
+    <div className='py-7 px-4 bg-zinc-900 w-full flex justify-center'>
       <div className='grid grid-cols-3 w-full max-w-screen-2xl'>
         <div className='border-r-2 border-dotted border-gray-400 px-2'>
           <div className='flex items-center mb-3 '>
