@@ -41,6 +41,7 @@ const dijkstraAlgorithm = (
   const nodesCopy = nodes.slice();
   nodesCopy[startNodePosition[0]][startNodePosition[1]].distance = 0;
   let unvisitedNodes = nodesCopy.flatMap((node) => node);
+  let visits = 0;
 
   while (unvisitedNodes.length) {
     unvisitedNodes = sortNodesByDistance(unvisitedNodes);
@@ -48,7 +49,9 @@ const dijkstraAlgorithm = (
 
     if (closestNode) {
       if (!closestNode.isWall) {
+        visits += 1;
         closestNode.isVisited = true;
+        closestNode.whenVisited = visits;
         visitedNodesInOrder.push(closestNode);
         if (closestNode.isFinish || closestNode.distance === Infinity) {
           return visitedNodesInOrder;

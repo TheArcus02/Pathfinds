@@ -5,6 +5,7 @@ export interface INode {
   isFinish: boolean;
   distance: number;
   isVisited: boolean;
+  whenVisited: number;
   isWall: boolean;
   previousNode: INode | null;
   isPath: boolean;

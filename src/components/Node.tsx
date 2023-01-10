@@ -29,7 +29,7 @@ const Node: React.FC<INodeComponent> = ({
   handleDrop,
 }) => {
   const dispatch = useDispatch();
-  const animationSpeed = 80;
+  const animationSpeed = 50;
   const [classes, setClasses] = useState('');
 
   useEffect(() => {
@@ -48,7 +48,7 @@ const Node: React.FC<INodeComponent> = ({
         if (node.isFinish) {
           dispatch(setPath());
         }
-      }, animationSpeed * node.distance);
+      }, animationSpeed * node.whenVisited);
     } else {
       setClasses('');
     }
@@ -64,6 +64,7 @@ const Node: React.FC<INodeComponent> = ({
     node.distance,
     node.row,
     node.col,
+    node.whenVisited,
     dispatch,
   ]);
 
