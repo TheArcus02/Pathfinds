@@ -29,7 +29,7 @@ const Node: React.FC<INodeComponent> = ({
   handleDrop,
 }) => {
   const dispatch = useDispatch();
-  const animationSpeed = 50;
+  const animationSpeed = 10;
   const [classes, setClasses] = useState('');
 
   useEffect(() => {

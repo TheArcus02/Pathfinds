@@ -5,7 +5,8 @@ import { cloneDeep } from 'lodash';
 import { ColAndRow, INode, NodesState } from '../utils/interfaces';
 import dijkstraAlgorithm from '../algorithms/dijkstra';
 import getShortestPath from '../algorithms/shortestPath';
-import getMaxCols from '../utils/utils';
+import { getMaxCols } from '../utils/utils';
+import bfsAlgorithm from '../algorithms/bfs';
 
 const START_ROW = 20;
 const START_COL = 15;
@@ -21,6 +22,7 @@ const generateNode = (col: number, row: number) => {
     isFinish: row === FINISH_ROW && col === FINISH_COL,
     distance: Infinity,
     isVisited: false,
+    whenVisited: 0,
     isWall: false,
     previousNode: null,
     isPath: false,
@@ -87,7 +89,7 @@ export const nodesSlice = createSlice({
     runDijkstra: (state) => {
       const { startNode, nodes } = state;
 
-      const nodesVisitedInOrder = dijkstraAlgorithm(cloneDeep(nodes), [
+      const nodesVisitedInOrder = bfsAlgorithm(cloneDeep(nodes), [
         startNode.row,
         startNode.col,
       ]);

@@ -1,25 +1,8 @@
 import { INode } from '../utils/interfaces';
+import { getClosestNodes } from '../utils/utils';
 
 const sortNodesByDistance = (unvisitedNodes: INode[]) => {
   return unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
-};
-
-const getClosestNodes = (node: INode, nodes: INode[][]) => {
-  const neightbors: INode[] = [];
-  const { col, row } = node;
-  if (row > 0) {
-    neightbors.push(nodes[row - 1][col]);
-  }
-  if (row < nodes.length - 1) {
-    neightbors.push(nodes[row + 1][col]);
-  }
-  if (col > 0) {
-    neightbors.push(nodes[row][col - 1]);
-  }
-  if (col < nodes[0].length - 1) {
-    neightbors.push(nodes[row][col + 1]);
-  }
-  return neightbors.filter((neightbor) => !neightbor.isVisited);
 };
 
 const updateUnvisitedNodes = (neightbors: INode[], currentNode: INode) => {
