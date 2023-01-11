@@ -7,6 +7,7 @@ import dijkstraAlgorithm from '../algorithms/dijkstra';
 import getShortestPath from '../algorithms/shortestPath';
 import { getMaxCols } from '../utils/utils';
 import bfsAlgorithm from '../algorithms/bfs';
+import dfsAlgorithm from '../algorithms/dfs';
 
 const START_ROW = 20;
 const START_COL = 15;
@@ -95,8 +96,8 @@ export const nodesSlice = createSlice({
 
         if (algo === 'dijkstra')
           return dijkstraAlgorithm(cloneDeep(nodes), start);
-        // eslint-disable-next-line no-else-return
-        else if (algo === 'bfs') return bfsAlgorithm(cloneDeep(nodes), start);
+        if (algo === 'bfs') return bfsAlgorithm(cloneDeep(nodes), start);
+        if (algo === 'dfs') return dfsAlgorithm(cloneDeep(nodes), start);
         return undefined;
       };
 

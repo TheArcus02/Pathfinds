@@ -57,6 +57,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
                 }`}
                 disabled={algo === selectedAlgorithm}
                 onClick={() => setSelectedAlgorithm(algo)}
+                key={algo}
               >
                 {algo.charAt(0).toUpperCase() + algo.slice(1)}
               </button>
@@ -79,6 +80,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
                 }`}
                 disabled={tool === selectedTool}
                 onClick={() => setSelectedTool(tool)}
+                key={tool}
               >
                 {getToolIcon(tool)}
                 {tool.charAt(0).toUpperCase() + tool.slice(1)}
