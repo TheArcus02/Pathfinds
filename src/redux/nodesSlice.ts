@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { cloneDeep } from 'lodash';
-import { ColAndRow, INode, NodesState } from '../utils/interfaces';
+import { cloneDeep, pick } from 'lodash';
+import { Algorithms, ColAndRow, INode, NodesState } from '../utils/interfaces';
 import dijkstraAlgorithm from '../algorithms/dijkstra';
 import getShortestPath from '../algorithms/shortestPath';
 import { getMaxCols } from '../utils/utils';
@@ -86,13 +86,21 @@ export const nodesSlice = createSlice({
       state.nodes[row][col].isWall = true;
     },
 
-    runDijkstra: (state) => {
+    runAlgorithm: (state, action: PayloadAction<Algorithms>) => {
       const { startNode, nodes } = state;
+      const algorithm = action.payload;
 
-      const nodesVisitedInOrder = bfsAlgorithm(cloneDeep(nodes), [
-        startNode.row,
-        startNode.col,
-      ]);
+      const pickAlgorithm = (algo: Algorithms) => {
+        const start = [startNode.row, startNode.col];
+
+        if (algo === 'dijkstra')
+          return dijkstraAlgorithm(cloneDeep(nodes), start);
+        // eslint-disable-next-line no-else-return
+        else if (algo === 'bfs') return bfsAlgorithm(cloneDeep(nodes), start);
+        return undefined;
+      };
+
+      const nodesVisitedInOrder = pickAlgorithm(algorithm);
       if (nodesVisitedInOrder?.length) {
         nodesVisitedInOrder.forEach((node) => {
           nodes[node.row][node.col] = node;
@@ -131,7 +139,7 @@ export const {
   changeStart,
   changeFinish,
   toggleWall,
-  runDijkstra,
+  runAlgorithm,
   setPath,
   clearPath,
 } = nodesSlice.actions;

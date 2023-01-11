@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import './App.css';
 import ConfigMenu from './components/ConfigMenu';
-import { DraggableElements } from './utils/interfaces';
+import { Algorithms, DraggableElements } from './utils/interfaces';
 import Node from './components/Node';
 import { RootState } from './redux/store';
 import {
@@ -10,8 +10,7 @@ import {
   changeStart,
   clearBoard,
   clearPath,
-  runDijkstra,
-  setPath,
+  runAlgorithm,
 } from './redux/nodesSlice';
 import useWindowSize from './hooks/useWindowSize';
 
@@ -40,9 +39,9 @@ const App = () => {
     else if (draggedElement === 'endNode') dispatch(changeFinish({ col, row }));
   };
 
-  const handleCallAlgorithm = () => {
+  const handleCallAlgorithm = (algorithm: Algorithms) => {
     setCanRun(false);
-    dispatch(runDijkstra());
+    dispatch(runAlgorithm(algorithm));
   };
 
   const handleClearBoard = () => {

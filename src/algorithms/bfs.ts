@@ -9,15 +9,14 @@ const bfsAlgorithm = (nodes: INode[][], startNodePosition: number[]) => {
   const visitedNodesInOrder: INode[] = [];
   let visits = 0;
 
+  start.isVisited = true;
   if (nodes.length === 0) return visitedNodesInOrder;
 
   while (queue.length > 0) {
     const closestNode = queue.shift();
-    // if (visits === 5) break;
     if (closestNode) {
       if (!closestNode.isWall) {
         visits += 1;
-        closestNode.isVisited = true;
         closestNode.whenVisited = visits;
         visitedNodesInOrder.push(closestNode);
         if (closestNode.isFinish) {

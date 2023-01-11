@@ -28,3 +28,7 @@ export interface NodesState {
 }
 
 export type DraggableElements = 'startNode' | 'endNode';
+
+export type Algorithms = 'dijkstra' | 'bfs' | 'astar' | 'dfs';
+export type Tools = 'Walls' | 'Weight' | 'Eraser';
+
