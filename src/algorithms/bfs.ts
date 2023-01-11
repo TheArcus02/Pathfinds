@@ -1,10 +1,12 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
-import { INode } from '../utils/interfaces';
+import { ColAndRow, INode } from '../utils/interfaces';
 import { getClosestNodes } from '../utils/utils';
 
-const bfsAlgorithm = (nodes: INode[][], startNodePosition: number[]) => {
-  const start = nodes[startNodePosition[0]][startNodePosition[1]];
+const bfsAlgorithm = (nodes: INode[][], startNodePosition: ColAndRow) => {
+  const { col: startCol, row: startRow } = startNodePosition;
+
+  const start = nodes[startRow][startCol];
   const queue: INode[] = [start];
   const visitedNodesInOrder: INode[] = [];
   let visits = 0;

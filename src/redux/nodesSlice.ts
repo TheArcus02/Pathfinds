@@ -1,13 +1,14 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { cloneDeep, pick } from 'lodash';
+import { clone, cloneDeep, endsWith, pick } from 'lodash';
 import { Algorithms, ColAndRow, INode, NodesState } from '../utils/interfaces';
 import dijkstraAlgorithm from '../algorithms/dijkstra';
 import getShortestPath from '../algorithms/shortestPath';
 import { getMaxCols } from '../utils/utils';
 import bfsAlgorithm from '../algorithms/bfs';
 import dfsAlgorithm from '../algorithms/dfs';
+import astarAlgorithm from '../algorithms/astar';
 
 const START_ROW = 20;
 const START_COL = 15;
@@ -22,6 +23,7 @@ const generateNode = (col: number, row: number) => {
     isStart: row === START_ROW && col === START_COL,
     isFinish: row === FINISH_ROW && col === FINISH_COL,
     distance: Infinity,
+    heuristic: Infinity,
     isVisited: false,
     whenVisited: 0,
     isWall: false,
@@ -88,16 +90,16 @@ export const nodesSlice = createSlice({
     },
 
     runAlgorithm: (state, action: PayloadAction<Algorithms>) => {
-      const { startNode, nodes } = state;
+      const { startNode, nodes, endNode } = state;
       const algorithm = action.payload;
 
       const pickAlgorithm = (algo: Algorithms) => {
-        const start = [startNode.row, startNode.col];
-
         if (algo === 'dijkstra')
-          return dijkstraAlgorithm(cloneDeep(nodes), start);
-        if (algo === 'bfs') return bfsAlgorithm(cloneDeep(nodes), start);
-        if (algo === 'dfs') return dfsAlgorithm(cloneDeep(nodes), start);
+          return dijkstraAlgorithm(cloneDeep(nodes), startNode);
+        if (algo === 'bfs') return bfsAlgorithm(cloneDeep(nodes), startNode);
+        if (algo === 'dfs') return dfsAlgorithm(cloneDeep(nodes), startNode);
+        if (algo === 'astar')
+          return astarAlgorithm(cloneDeep(nodes), startNode, endNode);
         return undefined;
       };
 

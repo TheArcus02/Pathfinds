@@ -1,4 +1,5 @@
-import { INode } from '../utils/interfaces';
+/* eslint-disable no-param-reassign */
+import { ColAndRow, INode } from '../utils/interfaces';
 import { getClosestNodes } from '../utils/utils';
 
 const sortNodesByDistance = (unvisitedNodes: INode[]) => {
@@ -15,15 +16,15 @@ const updateUnvisitedNodes = (neightbors: INode[], currentNode: INode) => {
 
 const dijkstraAlgorithm = (
   nodes: INode[][],
-  startNodePosition: number[],
+  startNodePosition: ColAndRow,
   // eslint-disable-next-line consistent-return
 ) => {
   const visitedNodesInOrder: INode[] = [];
   if (nodes.length === 0) return visitedNodesInOrder;
 
-  const nodesCopy = nodes.slice();
-  nodesCopy[startNodePosition[0]][startNodePosition[1]].distance = 0;
-  let unvisitedNodes = nodesCopy.flatMap((node) => node);
+  const { col: startCol, row: startRow } = startNodePosition;
+  nodes[startRow][startCol].distance = 0;
+  let unvisitedNodes = nodes.flatMap((node) => node);
   let visits = 0;
 
   while (unvisitedNodes.length) {
@@ -41,7 +42,6 @@ const dijkstraAlgorithm = (
         }
         const closestNeightbors = getClosestNodes(closestNode, nodes);
         updateUnvisitedNodes(closestNeightbors, closestNode);
-        // console.log(sortNodesByDistance(unvisitedNodes));
       }
     }
   }

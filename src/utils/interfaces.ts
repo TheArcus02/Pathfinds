@@ -4,6 +4,7 @@ export interface INode {
   isStart: boolean;
   isFinish: boolean;
   distance: number;
+  heuristic: number;
   isVisited: boolean;
   whenVisited: number;
   isWall: boolean;
