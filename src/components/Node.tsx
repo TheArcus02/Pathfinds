@@ -9,8 +9,6 @@ import { setPath, toggleWall } from '../redux/nodesSlice';
 
 interface INodeComponent {
   node: INode;
-  mouseIsPressed: boolean;
-  setMouseIsPressed: React.Dispatch<React.SetStateAction<boolean>>;
   setDraggedElement: (
     value: React.SetStateAction<DraggableElements | null>,
   ) => void;
@@ -19,14 +17,18 @@ interface INodeComponent {
     row: number,
     col: number,
   ) => void;
+  handleMouseDown: (node: INode) => void;
+  handleMouseEnter: (node: INode) => void;
+  handleMouseUp: () => void;
 }
 
 const Node: React.FC<INodeComponent> = ({
   node,
-  mouseIsPressed,
-  setMouseIsPressed,
   setDraggedElement,
   handleDrop,
+  handleMouseDown,
+  handleMouseEnter,
+  handleMouseUp,
 }) => {
   const dispatch = useDispatch();
   const animationSpeed = 10;
@@ -68,30 +70,13 @@ const Node: React.FC<INodeComponent> = ({
     dispatch,
   ]);
 
-  const handleMouseDown = (row: number, col: number) => {
-    if (!node.isStart && !node.isFinish) {
-      dispatch(toggleWall({ row, col }));
-      setMouseIsPressed(true);
-    }
-  };
-
-  const handleMouseEnter = (row: number, col: number) => {
-    if (!node.isStart && !node.isFinish && mouseIsPressed) {
-      dispatch(toggleWall({ row, col }));
-    }
-  };
-
-  const handleMouseUp = () => {
-    setMouseIsPressed(false);
-  };
-
   return (
     <div
       id={`${node.row}-${node.col}`}
       aria-label={`${node.row}-${node.col}`}
       className={`border border-solid border-slate-600 p-3 relative ${classes}`}
-      onMouseDown={() => handleMouseDown(node.row, node.col)}
-      onMouseEnter={() => handleMouseEnter(node.row, node.col)}
+      onMouseDown={() => handleMouseDown(node)}
+      onMouseEnter={() => handleMouseEnter(node)}
       onMouseUp={() => handleMouseUp()}
       role='gridcell'
       tabIndex={0}

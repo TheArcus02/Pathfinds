@@ -2,7 +2,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import './App.css';
 import ConfigMenu from './components/ConfigMenu';
-import { Algorithms, DraggableElements } from './utils/interfaces';
+import {
+  Algorithms,
+  DraggableElements,
+  INode,
+  Tools,
+} from './utils/interfaces';
 import Node from './components/Node';
 import { RootState } from './redux/store';
 import {
@@ -10,7 +15,9 @@ import {
   changeStart,
   clearBoard,
   clearPath,
+  resetNode,
   runAlgorithm,
+  toggleWall,
 } from './redux/nodesSlice';
 import useWindowSize from './hooks/useWindowSize';
 
@@ -22,6 +29,7 @@ const App = () => {
   const [draggedElement, setDraggedElement] =
     useState<DraggableElements | null>(null);
   const [canRun, setCanRun] = useState(true);
+  const [selectedTool, setSelectedTool] = useState<Tools>('Walls');
 
   const windowWidth = useWindowSize();
 
@@ -54,6 +62,23 @@ const App = () => {
     setCanRun(true);
   };
 
+  const handleMouseDown = (node: INode) => {
+    if (!node.isStart && !node.isFinish) {
+      const { row, col } = node;
+      if (selectedTool === 'Walls') dispatch(toggleWall({ row, col }));
+      else if (selectedTool === 'Eraser') dispatch(resetNode({ row, col }));
+      setMouseIsPressed(true);
+    }
+  };
+
+  const handleMouseEnter = (node: INode) => {
+    if (!node.isStart && !node.isFinish && mouseIsPressed) {
+      const { row, col } = node;
+      if (selectedTool === 'Walls') dispatch(toggleWall({ row, col }));
+      else if (selectedTool === 'Eraser') dispatch(resetNode({ row, col }));
+    }
+  };
+
   return (
     <div className='bg-zinc-800 min-h-screen'>
       <ConfigMenu
@@ -61,6 +86,8 @@ const App = () => {
         clearBoard={handleClearBoard}
         clearPath={handleClearPath}
         canRun={canRun}
+        selectedTool={selectedTool}
+        setSelectedTool={setSelectedTool}
       />
       <div className='w-full'>
         <div className='flex flex-col items-center'>
@@ -71,9 +98,10 @@ const App = () => {
                   node={node}
                   key={node.col + node.row}
                   handleDrop={handleDrop}
-                  mouseIsPressed={mouseIsPressed}
-                  setMouseIsPressed={setMouseIsPressed}
                   setDraggedElement={setDraggedElement}
+                  handleMouseDown={handleMouseDown}
+                  handleMouseEnter={handleMouseEnter}
+                  handleMouseUp={() => setMouseIsPressed(false)}
                 />
               ))}
             </div>

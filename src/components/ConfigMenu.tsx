@@ -13,6 +13,8 @@ interface IConfigMenu {
   clearBoard: () => void;
   clearPath: () => void;
   canRun: boolean;
+  selectedTool: Tools;
+  setSelectedTool: React.Dispatch<React.SetStateAction<Tools>>;
 }
 
 const ConfigMenu: React.FC<IConfigMenu> = ({
@@ -20,13 +22,14 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
   clearBoard,
   clearPath,
   canRun,
+  selectedTool,
+  setSelectedTool,
 }) => {
   const algorithms: Algorithms[] = ['dijkstra', 'astar', 'dfs', 'bfs'];
   const tools: Tools[] = ['Walls', 'Weight', 'Eraser'];
 
   const [selectedAlgorithm, setSelectedAlgorithm] =
     useState<Algorithms>('dijkstra');
-  const [selectedTool, setSelectedTool] = useState<Tools>('Walls');
 
   const getToolIcon = (tool: Tools) => {
     if (tool === 'Walls')

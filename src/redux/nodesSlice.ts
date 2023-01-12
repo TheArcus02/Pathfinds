@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { clone, cloneDeep, endsWith, pick } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { Algorithms, ColAndRow, INode, NodesState } from '../utils/interfaces';
 import dijkstraAlgorithm from '../algorithms/dijkstra';
 import getShortestPath from '../algorithms/shortestPath';
@@ -89,6 +89,11 @@ export const nodesSlice = createSlice({
       state.nodes[row][col].isWall = true;
     },
 
+    resetNode: (state, action: PayloadAction<ColAndRow>) => {
+      const { col, row } = action.payload;
+      state.nodes[row][col] = initialState.nodes[row][col];
+    },
+
     runAlgorithm: (state, action: PayloadAction<Algorithms>) => {
       const { startNode, nodes, endNode } = state;
       const algorithm = action.payload;
@@ -145,5 +150,6 @@ export const {
   runAlgorithm,
   setPath,
   clearPath,
+  resetNode,
 } = nodesSlice.actions;
 export default nodesSlice.reducer;
