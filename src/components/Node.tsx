@@ -107,15 +107,15 @@ const Node: React.FC<INodeComponent> = ({
           />
         </div>
       ) : node.isWall ? (
-        <div>
+        <div className='animate-place'>
           <GiBrickWall
             size='26px'
-            className='text-orange-500 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
+            className=' text-orange-500 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
           />
         </div>
       ) : (
         node.weight !== 0 && (
-          <div className='relative'>
+          <div className='relative animate-place'>
             <FaWeightHanging
               size='23px'
               className='text-gray-100 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'

@@ -3,7 +3,7 @@ module.exports = {
   theme: {
     extend: {
       keyframes: {
-        scaleNode: {
+        scaleColorNode: {
           '0%': {
             transform: 'scale(0.3)',
             borderRadius: '100%',
@@ -18,9 +18,22 @@ module.exports = {
             backgroundColor: 'rgb(16 185 129)',
           },
         },
+        scaleNode: {
+          '0%': {
+            transform: 'scale(0.3)',
+            borderRadius: '100%',
+          },
+          '75%': {
+            transform: 'scale(1.2)',
+          },
+          '100%': {
+            transform: 'scale(1)',
+          },
+        },
       },
       animation: {
-        visited: 'scaleNode 1.5s ease-out',
+        visited: 'scaleColorNode 1.5s ease-out',
+        place: 'scaleNode .3s ease-out',
       },
     },
   },
