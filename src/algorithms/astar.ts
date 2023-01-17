@@ -5,7 +5,10 @@ import { getClosestNodes } from '../utils/utils';
 const sortNodes = (unvisitedNodes: INode[]) => {
   return unvisitedNodes.sort(
     (nodeA, nodeB) =>
-      nodeA.distance + nodeA.heuristic - (nodeB.distance + nodeB.heuristic),
+      nodeA.distance +
+      nodeA.heuristic +
+      nodeA.weight -
+      (nodeB.distance + nodeB.heuristic + nodeB.weight),
   );
 };
 
@@ -51,7 +54,6 @@ const astarAlgorithm = (
   while (unvisitedNodes.length) {
     unvisitedNodes = sortNodes(unvisitedNodes);
     const closestNode = unvisitedNodes.shift();
-    console.log(closestNode)
     if (closestNode) {
       if (!closestNode.isWall) {
         visits += 1;

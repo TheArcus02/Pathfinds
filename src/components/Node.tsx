@@ -2,10 +2,10 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { VscDebugStart } from 'react-icons/vsc';
-import { FaFlagCheckered } from 'react-icons/fa';
+import { FaFlagCheckered, FaWeightHanging } from 'react-icons/fa';
 import { GiBrickWall } from 'react-icons/gi';
 import { DraggableElements, INode } from '../utils/interfaces';
-import { setPath, toggleWall } from '../redux/nodesSlice';
+import { setPath } from '../redux/nodesSlice';
 
 interface INodeComponent {
   node: INode;
@@ -106,13 +106,23 @@ const Node: React.FC<INodeComponent> = ({
             className='text-white bg-rose-600 absolute cursor-pointer left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
           />
         </div>
+      ) : node.isWall ? (
+        <div>
+          <GiBrickWall
+            size='26px'
+            className='text-orange-500 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
+          />
+        </div>
       ) : (
-        node.isWall && (
-          <div>
-            <GiBrickWall
-              size='26px'
-              className='text-orange-500 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
+        node.weight !== 0 && (
+          <div className='relative'>
+            <FaWeightHanging
+              size='23px'
+              className='text-gray-100 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
             />
+            <span className='text-grey-700 z-10 text-[12px] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/3'>
+              {node.weight}
+            </span>
           </div>
         )
       )}

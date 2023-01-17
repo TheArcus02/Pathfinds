@@ -6,6 +6,7 @@ import { FaRegHourglass, FaEraser, FaWeightHanging } from 'react-icons/fa';
 import { MdClearAll } from 'react-icons/md';
 import { GiBrickWall } from 'react-icons/gi';
 import { useState } from 'react';
+import { parseInt } from 'lodash';
 import { Algorithms, Tools } from '../utils/interfaces';
 
 interface IConfigMenu {
@@ -15,6 +16,8 @@ interface IConfigMenu {
   canRun: boolean;
   selectedTool: Tools;
   setSelectedTool: React.Dispatch<React.SetStateAction<Tools>>;
+  weight: number;
+  setWeight: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const ConfigMenu: React.FC<IConfigMenu> = ({
@@ -24,6 +27,8 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
   canRun,
   selectedTool,
   setSelectedTool,
+  weight,
+  setWeight,
 }) => {
   const algorithms: Algorithms[] = ['dijkstra', 'astar', 'dfs', 'bfs'];
   const tools: Tools[] = ['Walls', 'Weight', 'Eraser'];
@@ -89,6 +94,40 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
                 {tool.charAt(0).toUpperCase() + tool.slice(1)}
               </button>
             ))}
+            <div className='custom-number-input'>
+              <div className='w-full text-gray-100 text-sm font-semibold mb-1'>
+                Set Weight
+              </div>
+              <div className='flex items-center gap-2'>
+                <div>
+                  <FaWeightHanging size='23px' className='text-gray-100' />
+                </div>
+                <div className='flex flex-row w-20 rounded-lg'>
+                  <button
+                    type='button'
+                    onClick={() => setWeight((state) => state - 1)}
+                    className=' bg-zinc-700 text-gray-100 hover:text-gray-200 hover:bg-zinc-600 h-full px-1 rounded-l cursor-pointer outline-none'
+                  >
+                    <span className='m-auto text-2xl font-thin'>−</span>
+                  </button>
+                  <input
+                    type='number'
+                    id='custom-input-number'
+                    className='text-center w-full bg-zinc-500 font-semibold text-md hover:text-gray-300 focus:text-gray-100  md:text-basecursor-default flex items-center text-gray-100  outline-none'
+                    name='custom-input-number'
+                    value={weight}
+                    onChange={(e) => setWeight(parseInt(e.target.value))}
+                  />
+                  <button
+                    type='button'
+                    onClick={() => setWeight((state) => state + 1)}
+                    className='bg-zinc-700 text-gray-100 hover:text-gray-200 hover:bg-zinc-600 h-full px-1 rounded-r cursor-pointer'
+                  >
+                    <span className='m-auto text-2xl font-thin'>+</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div className='px-6'>

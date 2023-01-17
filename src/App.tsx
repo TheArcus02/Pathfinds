@@ -17,6 +17,7 @@ import {
   clearPath,
   resetNode,
   runAlgorithm,
+  setWeight,
   toggleWall,
 } from './redux/nodesSlice';
 import useWindowSize from './hooks/useWindowSize';
@@ -30,6 +31,7 @@ const App = () => {
     useState<DraggableElements | null>(null);
   const [canRun, setCanRun] = useState(true);
   const [selectedTool, setSelectedTool] = useState<Tools>('Walls');
+  const [currentWeight, setCurrentWeight] = useState(1);
 
   const windowWidth = useWindowSize();
 
@@ -67,6 +69,8 @@ const App = () => {
       const { row, col } = node;
       if (selectedTool === 'Walls') dispatch(toggleWall({ row, col }));
       else if (selectedTool === 'Eraser') dispatch(resetNode({ row, col }));
+      else if (selectedTool === 'Weight')
+        dispatch(setWeight({ row, col, weight: currentWeight }));
       setMouseIsPressed(true);
     }
   };
@@ -88,6 +92,8 @@ const App = () => {
         canRun={canRun}
         selectedTool={selectedTool}
         setSelectedTool={setSelectedTool}
+        weight={currentWeight}
+        setWeight={setCurrentWeight}
       />
       <div className='w-full'>
         <div className='flex flex-col items-center'>

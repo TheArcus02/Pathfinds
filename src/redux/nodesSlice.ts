@@ -29,6 +29,7 @@ const generateNode = (col: number, row: number) => {
     isWall: false,
     previousNode: null,
     isPath: false,
+    weight: 0,
   };
   return node;
 };
@@ -87,6 +88,14 @@ export const nodesSlice = createSlice({
     toggleWall: (state, action: PayloadAction<ColAndRow>) => {
       const { col, row } = action.payload;
       state.nodes[row][col].isWall = true;
+    },
+
+    setWeight: (
+      state,
+      action: PayloadAction<ColAndRow & Pick<INode, 'weight'>>,
+    ) => {
+      const { col, row, weight } = action.payload;
+      state.nodes[row][col].weight = weight;
     },
 
     resetNode: (state, action: PayloadAction<ColAndRow>) => {
@@ -151,5 +160,6 @@ export const {
   setPath,
   clearPath,
   resetNode,
+  setWeight,
 } = nodesSlice.actions;
 export default nodesSlice.reducer;

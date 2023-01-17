@@ -1,14 +1,15 @@
 export interface INode {
   col: number;
   row: number;
-  isStart: boolean;
-  isFinish: boolean;
   distance: number;
+  weight: number;
   heuristic: number;
   isVisited: boolean;
   whenVisited: number;
-  isWall: boolean;
   previousNode: INode | null;
+  isFinish: boolean;
+  isStart: boolean;
+  isWall: boolean;
   isPath: boolean;
 }
 
@@ -32,4 +33,3 @@ export type DraggableElements = 'startNode' | 'endNode';
 
 export type Algorithms = 'dijkstra' | 'bfs' | 'astar' | 'dfs';
 export type Tools = 'Walls' | 'Weight' | 'Eraser';
-

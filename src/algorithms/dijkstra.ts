@@ -3,7 +3,10 @@ import { ColAndRow, INode } from '../utils/interfaces';
 import { getClosestNodes } from '../utils/utils';
 
 const sortNodesByDistance = (unvisitedNodes: INode[]) => {
-  return unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
+  return unvisitedNodes.sort(
+    (nodeA, nodeB) =>
+      nodeA.distance + nodeA.weight - (nodeB.distance + nodeB.weight),
+  );
 };
 
 const updateUnvisitedNodes = (neightbors: INode[], currentNode: INode) => {
