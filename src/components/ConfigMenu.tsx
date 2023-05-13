@@ -8,6 +8,7 @@ import { GiBrickWall } from 'react-icons/gi';
 import { useState } from 'react';
 import { parseInt } from 'lodash';
 import { Algorithms, Tools } from '../utils/interfaces';
+import ActionButton from './ActionButton';
 
 interface IConfigMenu {
   callAlgorithm: (algorithm: Algorithms) => void;
@@ -37,72 +38,65 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
     useState<Algorithms>('dijkstra');
 
   const getToolIcon = (tool: Tools) => {
-    if (tool === 'Walls')
-      return <GiBrickWall size='23px' className='text-gray-100' />;
-    if (tool === 'Weight')
-      return <FaWeightHanging size='23px' className='text-gray-100' />;
-    if (tool === 'Eraser')
-      return <FaEraser size='23px' className='text-gray-100' />;
+    if (tool === 'Walls') return GiBrickWall;
+    if (tool === 'Weight') return FaWeightHanging;
+    if (tool === 'Eraser') return FaEraser;
     return undefined;
   };
 
   return (
-    <div className='py-7 px-4 bg-zinc-900 w-full flex justify-center'>
+    <div className='py-3 md:py-4 px-1 md:px-4 bg-zinc-900 w-full flex justify-center'>
       <div className='grid grid-cols-3 w-full max-w-screen-2xl'>
-        <div className='border-r-2 border-dotted border-gray-400 px-2'>
-          <div className='flex items-center mb-3 '>
+        <div className='border-r-2 border-dotted border-gray-400 px-1 md:px-2'>
+          <div className='hidden md:flex items-center mb-3'>
             <TbMathFunction className='text-gray-100 mr-1 text-2xl' />
             <h3 className='text-xl text-gray-100 font-medium'>Algorithms</h3>
           </div>
-          <div className='grid grid-cols-3 w-full'>
+          <div className='grid grid-cols-2 md:grid-cols-3 gap-1 w-full'>
             {algorithms.map((algo) => (
-              <button
-                type='button'
-                className={`text-gray-100 ease-in duration-150 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none ${
-                  selectedAlgorithm === algo
-                    ? 'bg-sky-500   hover:cursor-default'
-                    : 'bg-sky-700 hover:bg-sky-600'
-                }`}
+              <ActionButton
+                action={() => setSelectedAlgorithm(algo)}
+                buttonColor='sky-700'
+                hoverColor='sky-600'
+                disabledColor='sky-500'
+                textColor='gray-100'
                 disabled={algo === selectedAlgorithm}
-                onClick={() => setSelectedAlgorithm(algo)}
+                text={algo.charAt(0).toUpperCase() + algo.slice(1)}
                 key={algo}
-              >
-                {algo.charAt(0).toUpperCase() + algo.slice(1)}
-              </button>
+              />
             ))}
           </div>
         </div>
-        <div className='border-r-2 border-dotted border-gray-400 px-6'>
-          <div className='flex items-center mb-3'>
+        <div className='border-r-2 border-dotted border-gray-400 px-1 md:px-6'>
+          <div className='hidden md:flex items-center mb-3'>
             <RiToolsFill className='text-gray-100 mr-1 text-2xl' />
             <h3 className='text-xl text-gray-100 font-medium'>Tools</h3>
           </div>
-          <div className='grid grid-cols-3 gap-3'>
+          <div className='grid grid-cols-2 md:grid-cols-3 gap-3'>
             {tools.map((tool) => (
-              <button
-                type='button'
-                className={`flex items-center gap-2 ease-in duration-150 text-gray-100 text-sm font-medium px-5 py-2.5 rounded-lg ${
-                  selectedTool === tool
-                    ? 'bg-zinc-700'
-                    : 'hover:bg-zinc-800 hover:cursor-pointer'
-                }`}
-                disabled={tool === selectedTool}
-                onClick={() => setSelectedTool(tool)}
+              <ActionButton
+                disabledColor={selectedTool === tool ? 'zinc-700' : undefined}
+                hoverColor='bg-zinc-800'
+                textColor='gray-100'
+                Icon={getToolIcon(tool)}
+                iconSize='23px'
+                iconColor='gray-100'
+                action={() => setSelectedTool(tool)}
+                text={tool.charAt(0).toUpperCase() + tool.slice(1)}
+                disabled={selectedTool === tool}
+                HideTextOnSm
                 key={tool}
-              >
-                {getToolIcon(tool)}
-                {tool.charAt(0).toUpperCase() + tool.slice(1)}
-              </button>
+              />
             ))}
             <div className='custom-number-input'>
-              <div className='w-full text-gray-100 text-sm font-semibold mb-1'>
+              <div className='hidden md:block w-full text-gray-100 text-sm font-semibold mb-1'>
                 Set Weight
               </div>
               <div className='flex items-center gap-2'>
                 <div>
                   <FaWeightHanging size='23px' className='text-gray-100' />
                 </div>
-                <div className='flex flex-row w-20 rounded-lg'>
+                <div className='flex flex-row w-1 md:w-20 rounded-lg'>
                   <button
                     type='button'
                     onClick={() => setWeight((state) => state - 1)}
@@ -113,7 +107,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
                   <input
                     type='number'
                     id='custom-input-number'
-                    className='text-center w-full bg-zinc-500 font-semibold text-md hover:text-gray-300 focus:text-gray-100  md:text-basecursor-default flex items-center text-gray-100  outline-none'
+                    className='text-center min-w-[15px] w-full bg-zinc-500 font-semibold text-md hover:text-gray-300 focus:text-gray-100  md:text-basecursor-default flex items-center text-gray-100  outline-none'
                     name='custom-input-number'
                     value={weight}
                     onChange={(e) => setWeight(parseInt(e.target.value))}
@@ -131,44 +125,42 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
           </div>
         </div>
         <div className='px-6'>
-          <div className='flex items-center mb-3'>
+          <div className='hidden md:flex items-center mb-3'>
             <FaRegHourglass className='text-gray-100 mr-1 text-xl' />
             <h3 className='text-xl text-gray-100 font-medium'>Actions</h3>
           </div>
-          <div className='flex flex-wrap gap-2'>
-            <button
-              type='button'
+          <div className='grid grid-cols-2 gap-3'>
+            <ActionButton
+              buttonColor='zinc-200'
+              Icon={VscRunAll}
+              iconColor='zinc-200'
+              iconSize='23px'
+              action={() => callAlgorithm(selectedAlgorithm)}
+              hoverColor='bg-green-400'
               disabled={!canRun}
-              className={`text-black bg-zinc-200 ease-in duration-150  font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none ${
-                canRun ? 'hover:bg-green-400' : 'bg-gray-400'
-              }`}
-              onClick={() => callAlgorithm(selectedAlgorithm)}
-            >
-              <div className='flex items-center'>
-                <VscRunAll className='text-lg mr-1' />
-                Run
-              </div>
-            </button>
-            <button
-              type='button'
-              className='text-black bg-zinc-200 ease-in duration-150 hover:bg-amber-600 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none '
-              onClick={() => clearPath()}
-            >
-              <div className='flex items-center'>
-                <AiOutlineClear className='text-lg mr-1' />
-                Clear Path
-              </div>
-            </button>
-            <button
-              type='button'
-              className='text-black bg-zinc-200 ease-in duration-150 hover:bg-red-400 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none '
-              onClick={() => clearBoard()}
-            >
-              <div className='flex items-center'>
-                <MdClearAll className='text-lg mr-1' />
-                Clear Board
-              </div>
-            </button>
+              text='Run'
+              HideTextOnSm
+            />
+            <ActionButton
+              buttonColor='zinc-200'
+              Icon={AiOutlineClear}
+              iconSize='23px'
+              iconColor='zinc-200'
+              action={() => clearPath()}
+              hoverColor='bg-amber-600'
+              text='Clear Path'
+              HideTextOnSm
+            />
+            <ActionButton
+              buttonColor='zinc-200'
+              Icon={MdClearAll}
+              iconSize='23px'
+              iconColor='zinc-200'
+              action={() => clearBoard()}
+              hoverColor='bg-red-400'
+              text='Clear Path'
+              HideTextOnSm
+            />
           </div>
         </div>
       </div>
