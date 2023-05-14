@@ -139,6 +139,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
               hoverColor='bg-green-400'
               disabled={!canRun}
               text='Run'
+              textColor='gray-100'
               HideTextOnSm
             />
             <ActionButton
@@ -149,6 +150,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
               action={() => clearPath()}
               hoverColor='bg-amber-600'
               text='Clear Path'
+              textColor='gray-100'
               HideTextOnSm
             />
             <ActionButton
@@ -159,6 +161,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
               action={() => clearBoard()}
               hoverColor='bg-red-400'
               text='Clear Path'
+              textColor='gray-100'
               HideTextOnSm
             />
           </div>

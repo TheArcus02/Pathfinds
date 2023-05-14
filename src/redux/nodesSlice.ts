@@ -11,12 +11,15 @@ import dfsAlgorithm from '../algorithms/dfs';
 import astarAlgorithm from '../algorithms/astar';
 
 const START_ROW = 20;
-const START_COL = 15;
 const FINISH_ROW = 20;
-const FINISH_COL = 40;
 const TOTAL_ROWS = 45;
 
-const generateNode = (col: number, row: number) => {
+const generateNode = (
+  col: number,
+  row: number,
+  START_COL: number,
+  FINISH_COL: number,
+) => {
   const node: INode = {
     col,
     row,
@@ -36,11 +39,13 @@ const generateNode = (col: number, row: number) => {
 
 const getInitialState = () => {
   const TOTAL_COLS = getMaxCols();
+  const FINISH_COL = Math.floor(TOTAL_COLS / 2);
+  const START_COL = Math.floor(TOTAL_COLS / 2) - 3;
   return {
     nodes: [...Array(TOTAL_ROWS).keys()].map((row) =>
       [
         ...Array(TOTAL_COLS > FINISH_COL ? TOTAL_COLS : FINISH_COL + 1).keys(),
-      ].map((col) => generateNode(col, row)),
+      ].map((col) => generateNode(col, row, START_COL, FINISH_COL)),
     ),
     startNode: {
       row: START_ROW,
