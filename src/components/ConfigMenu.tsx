@@ -14,6 +14,7 @@ interface IConfigMenu {
   callAlgorithm: (algorithm: Algorithms) => void;
   clearBoard: () => void;
   clearPath: () => void;
+  generateMaze: () => void;
   canRun: boolean;
   selectedTool: Tools;
   setSelectedTool: React.Dispatch<React.SetStateAction<Tools>>;
@@ -30,6 +31,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
   setSelectedTool,
   weight,
   setWeight,
+  generateMaze,
 }) => {
   const algorithms: Algorithms[] = ['dijkstra', 'astar', 'dfs', 'bfs'];
   const tools: Tools[] = ['Walls', 'Weight', 'Eraser'];
@@ -52,15 +54,14 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
             <TbMathFunction className='text-gray-100 mr-1 text-2xl' />
             <h3 className='text-xl text-gray-100 font-medium'>Algorithms</h3>
           </div>
-          <div className='grid grid-cols-2 md:grid-cols-3 gap-1 w-full'>
+          <div className='grid grid-cols-2 md:grid-cols-3 gap-1 w-full '>
             {algorithms.map((algo) => (
               <ActionButton
                 action={() => setSelectedAlgorithm(algo)}
-                buttonColor='sky-700'
-                hoverColor='sky-600'
-                disabledColor='sky-500'
+                hoverColor='zinc-800'
                 textColor='gray-100'
                 disabled={algo === selectedAlgorithm}
+                disabledColor='zinc-700'
                 text={algo.charAt(0).toUpperCase() + algo.slice(1)}
                 key={algo}
               />
@@ -76,7 +77,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
             {tools.map((tool) => (
               <ActionButton
                 disabledColor={selectedTool === tool ? 'zinc-700' : undefined}
-                hoverColor='bg-zinc-800'
+                hoverColor='zinc-800'
                 textColor='gray-100'
                 Icon={getToolIcon(tool)}
                 iconSize='23px'
@@ -131,36 +132,33 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
           </div>
           <div className='grid grid-cols-2 gap-3'>
             <ActionButton
-              buttonColor='zinc-200'
               Icon={VscRunAll}
               iconColor='zinc-200'
               iconSize='23px'
               action={() => callAlgorithm(selectedAlgorithm)}
-              hoverColor='bg-green-400'
+              hoverColor='green-400'
               disabled={!canRun}
               text='Run'
               textColor='gray-100'
               HideTextOnSm
             />
             <ActionButton
-              buttonColor='zinc-200'
               Icon={AiOutlineClear}
               iconSize='23px'
               iconColor='zinc-200'
               action={() => clearPath()}
-              hoverColor='bg-amber-600'
+              hoverColor='amber-600'
               text='Clear Path'
               textColor='gray-100'
               HideTextOnSm
             />
             <ActionButton
-              buttonColor='zinc-200'
               Icon={MdClearAll}
               iconSize='23px'
               iconColor='zinc-200'
-              action={() => clearBoard()}
-              hoverColor='bg-red-400'
-              text='Clear Path'
+              action={() => generateMaze()}
+              hoverColor='red-400'
+              text='Clear Board'
               textColor='gray-100'
               HideTextOnSm
             />

@@ -31,7 +31,7 @@ const Node: React.FC<INodeComponent> = ({
   handleMouseUp,
 }) => {
   const dispatch = useDispatch();
-  const animationSpeed = 10;
+  const animationSpeed = 100; // higher is slower
   const [classes, setClasses] = useState('');
 
   useEffect(() => {

@@ -9,6 +9,7 @@ import { getMaxCols } from '../utils/utils';
 import bfsAlgorithm from '../algorithms/bfs';
 import dfsAlgorithm from '../algorithms/dfs';
 import astarAlgorithm from '../algorithms/astar';
+import generateMaze from '../algorithms/mazeGenerator';
 
 const START_ROW = 20;
 const FINISH_ROW = 20;
@@ -130,6 +131,13 @@ export const nodesSlice = createSlice({
       }
     },
 
+    runGenerateMaze: (state) => {
+      const { nodes } = state;
+      const newNodes = generateMaze(cloneDeep(nodes));
+      console.log(newNodes);
+      state.nodes = newNodes;
+    },
+
     setPath: (state) => {
       const { nodes, endNode } = state;
       const finishNode = nodes[endNode.row][endNode.col];
@@ -166,5 +174,6 @@ export const {
   clearPath,
   resetNode,
   setWeight,
+  runGenerateMaze,
 } = nodesSlice.actions;
 export default nodesSlice.reducer;

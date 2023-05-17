@@ -33,9 +33,9 @@ const ActionButton: React.FC<IActionButton> = ({
       disabled={disabled}
       className={`text-${
         textColor || 'black'
-      } ease-in border-[1px] border-zinc-800 duration-150 font-light border- md:font-medium rounded-lg text-sm px-1 md:px-5 py-0.5 md:py-2.5 focus:outline-none  ${
+      } ease-in duration-150 border-[1px] border-zinc-800 font-light md:font-medium rounded-lg text-sm px-1 md:px-5 py-0.5 md:py-2.5 focus:outline-none ${
         !disabled
-          ? `hover:${hoverColor} bg-${buttonColor} cursor-pointer`
+          ? `bg-${buttonColor} hover:bg-${hoverColor} cursor-pointer`
           : `bg-${disabledColor || 'gray-400'}`
       }`}
       onClick={action}

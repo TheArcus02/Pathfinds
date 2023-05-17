@@ -19,6 +19,7 @@ import {
   runAlgorithm,
   setWeight,
   toggleWall,
+  runGenerateMaze,
 } from './redux/nodesSlice';
 import useWindowSize from './hooks/useWindowSize';
 
@@ -64,6 +65,11 @@ const App = () => {
     setCanRun(true);
   };
 
+  const handleGenerateMaze = () => {
+    dispatch(runGenerateMaze());
+    setCanRun(true);
+  };
+
   const handleMouseDown = (node: INode) => {
     if (!node.isStart && !node.isFinish) {
       const { row, col } = node;
@@ -89,6 +95,7 @@ const App = () => {
         callAlgorithm={handleCallAlgorithm}
         clearBoard={handleClearBoard}
         clearPath={handleClearPath}
+        generateMaze={handleGenerateMaze}
         canRun={canRun}
         selectedTool={selectedTool}
         setSelectedTool={setSelectedTool}

@@ -3,7 +3,6 @@ import { INode } from './interfaces';
 export const getMaxCols = () => {
   const colWidth = 26; // 26px x 26px
   const screenWidth = document.body.offsetWidth;
-  console.log(screenWidth / colWidth);
   return Math.floor(screenWidth / colWidth);
 };
 

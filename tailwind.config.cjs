@@ -5,9 +5,14 @@ module.exports = {
       keyframes: {
         scaleColorNode: {
           '0%': {
-            transform: 'scale(0.3)',
+            transform: 'scale(1)',
             borderRadius: '100%',
             backgroundColor: 'rgb(202 138 4)',
+          },
+          '20%': {
+            transform: 'scale(0.2)',
+            borderRadius: '100%',
+            backgroundColor: 'rgb(30 138 4)',
           },
           '75%': {
             transform: 'scale(1.2)',
