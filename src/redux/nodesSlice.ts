@@ -132,9 +132,8 @@ export const nodesSlice = createSlice({
     },
 
     runGenerateMaze: (state) => {
-      const { nodes } = state;
-      const newNodes = generateMaze(cloneDeep(nodes));
-      console.log(newNodes);
+      const { nodes, startNode, endNode } = state;
+      const newNodes = generateMaze(cloneDeep(nodes), startNode, endNode);
       state.nodes = newNodes;
     },
 

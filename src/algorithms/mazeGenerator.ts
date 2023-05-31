@@ -1,92 +1,79 @@
 /* eslint-disable no-param-reassign */
-import { INode } from '../utils/interfaces';
+import { ColAndRow, INode } from '../utils/interfaces';
 
 const getRandomInteger = (min: number, max: number): number => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
-
-const getWalls = (nodes: INode[][], node: INode): INode[] => {
-  const walls: INode[] = [];
+const computeFrontierNodes = (nodes: INode[][], node: INode): INode[] => {
   const { row, col } = node;
-  if (row > 0) walls.push(nodes[row - 1][col]);
-  if (row < nodes.length - 1) walls.push(nodes[row + 1][col]);
-  if (col > 0) walls.push(nodes[row][col - 1]);
-  if (col < nodes[0].length - 1) walls.push(nodes[row][col + 1]);
-  return walls.filter((wall) => wall.isWall);
-};
-
-const getNeighboringNode = (nodes: INode[][], node: INode): INode | null => {
-  const { row, col } = node;
-
-  const topNode = row > 0 ? nodes[row - 1][col] : null;
-  const bottomNode = row < nodes.length - 1 ? nodes[row + 1][col] : null;
-  const leftNode = col > 0 ? nodes[row][col - 1] : null;
-  const rightNode = col < nodes[0].length - 1 ? nodes[row][col + 1] : null;
-
-  if (topNode && !topNode.isVisited) return topNode;
-  if (bottomNode && !bottomNode.isVisited) return bottomNode;
-  if (leftNode && !leftNode.isVisited) return leftNode;
-  if (rightNode && !rightNode.isVisited) return rightNode;
-
-  return null;
+  const frontierNodes: INode[] = [];
+  if (row > 1) frontierNodes.push(nodes[row - 2][col]);
+  if (row < nodes.length - 2) frontierNodes.push(nodes[row + 2][col]);
+  if (col > 1) frontierNodes.push(nodes[row][col - 2]);
+  if (col < nodes[0].length - 2) frontierNodes.push(nodes[row][col + 2]);
+  // eslint-disable-next-line no-return-assign
+  frontierNodes.forEach((cell) => cell.foundBy = {col, row})
+  return frontierNodes.filter((cell) => cell.isWall);
 };
 
 const prim = (nodes: INode[][]) => {
-  const startingNode = nodes[0][0];
+  // getting random starting node
+  const startingNode =
+    nodes[getRandomInteger(0, nodes.length - 1)][
+      getRandomInteger(0, nodes[0].length - 1)
+    ];
+
+  // setting starting node to passage
   startingNode.isWall = false;
-  startingNode.isVisited = true;
 
-  const walls = getWalls(nodes, startingNode);
+  // getting frontier nodes (walls with distance 2 within the grid)
+  const frontierNodes = computeFrontierNodes(nodes, startingNode);
 
-  while (walls.length > 0) {
-    const randomWall = walls[getRandomInteger(0, walls.length - 1)];
-    const neighboringNode = getNeighboringNode(nodes, randomWall);
+  while (frontierNodes.length > 0) {
+    // getting random frontier node
+    const randomFrontierNode = frontierNodes[getRandomInteger(0, frontierNodes.length - 1)];
+    const { row, col, foundBy } = randomFrontierNode;
 
-    if (neighboringNode && neighboringNode.isWall) {
-      randomWall.isWall = false;
+    // getting node between random frontier node and 
+    // node that found the random frontier node
+    // eslint-disable-next-line prettier/prettier
+    const nodeBetween = nodes[row - (row - foundBy!.row) / 2][col - (col - foundBy!.col) / 2]; 
+    
+    // setting node between to passage
+    nodeBetween.isWall = false;
+    randomFrontierNode.isWall = false;
 
-      if (neighboringNode.row === randomWall.row) {
-        const colIndex =
-          randomWall.col < neighboringNode.col
-            ? randomWall.col + 1
-            : randomWall.col - 1;
+    // getting new frontier nodes
+    const newFrontierNodes = computeFrontierNodes(nodes, randomFrontierNode);
 
-        nodes[randomWall.row][colIndex].isWall = false;
-      } else {
-        const rowIndex =
-          randomWall.row < neighboringNode.row
-            ? randomWall.row + 1
-            : randomWall.row - 1;
-
-        nodes[rowIndex][randomWall.col].isWall = false;
-      }
-
-      const newWalls = getWalls(nodes, randomWall);
-      walls.push(...newWalls);
-      neighboringNode.isVisited = true;
-      randomWall.isVisited = true;
-    }
-    walls.splice(walls.indexOf(randomWall), 1);
-
-    // * Debugging
-    // const nodesWithWalls = nodes
-    //   .flatMap((node) => node)
-    //   .filter((node) => node.isWall);
-    // nodesWithWalls.length < 10 && console.log(nodesWithWalls);
+    // adding new frontier nodes to frontier nodes
+    frontierNodes.push(...newFrontierNodes);
+    
+    // removing random frontier node from frontier nodes
+    frontierNodes.splice(frontierNodes.indexOf(randomFrontierNode), 1);
   }
+
   return nodes;
 };
 
-const generateMaze = (nodes: INode[][]): INode[][] => {
+const generateMaze = (nodes: INode[][], startNode: ColAndRow, endNode: ColAndRow): INode[][] => {
   // Set all nodes' isWall property to true initially
-  nodes[0][0].isWall = true;
   nodes.forEach((row) =>
     row.forEach((node) => {
       node.isWall = true;
     }),
   );
+
+  // Generate maze
   nodes = prim(nodes);
-  console.log('maze generated');
+
+  // Make sure that start and end nodes are not walls
+  const {row: startRow, col:startCol } = startNode;
+  const {row: endRow, col: endCol } = endNode;
+  nodes[startRow][startCol].isWall = false;
+  nodes[endRow][endCol].isWall = false;
+
+
   return nodes;
 };
 

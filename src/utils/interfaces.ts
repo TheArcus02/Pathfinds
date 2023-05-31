@@ -11,6 +11,7 @@ export interface INode {
   isStart: boolean;
   isWall: boolean;
   isPath: boolean;
+  foundBy?: ColAndRow;
 }
 
 export interface DraggableNode {
