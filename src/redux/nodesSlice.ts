@@ -143,7 +143,6 @@ export const nodesSlice = createSlice({
 
       if (finishNode.previousNode) {
         const nodesInShortestPath = getShortestPath(finishNode);
-
         nodesInShortestPath.forEach((node) => {
           nodes[node.row][node.col].isPath = true;
         });
@@ -157,6 +156,7 @@ export const nodesSlice = createSlice({
           node.isPath = false;
           node.isVisited = false;
           node.distance = Infinity;
+          node.previousNode = null;
         }),
       );
     },

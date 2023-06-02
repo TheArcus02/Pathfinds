@@ -4,7 +4,7 @@ import { VscRunAll } from 'react-icons/vsc';
 import { AiOutlineClear } from 'react-icons/ai';
 import { FaRegHourglass, FaEraser, FaWeightHanging } from 'react-icons/fa';
 import { MdClearAll } from 'react-icons/md';
-import { GiBrickWall } from 'react-icons/gi';
+import { GiBrickWall, GiMaze } from 'react-icons/gi';
 import { useState } from 'react';
 import { parseInt } from 'lodash';
 import { Algorithms, Tools } from '../utils/interfaces';
@@ -143,6 +143,16 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
               HideTextOnSm
             />
             <ActionButton
+              Icon={GiMaze}
+              iconSize='23px'
+              iconColor='zinc-200'
+              action={() => generateMaze()}
+              hoverColor='red-400'
+              text='Generate Maze'
+              textColor='gray-100'
+              HideTextOnSm
+            />
+            <ActionButton
               Icon={AiOutlineClear}
               iconSize='23px'
               iconColor='zinc-200'
@@ -156,7 +166,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
               Icon={MdClearAll}
               iconSize='23px'
               iconColor='zinc-200'
-              action={() => generateMaze()}
+              action={() => clearBoard()}
               hoverColor='red-400'
               text='Clear Board'
               textColor='gray-100'
