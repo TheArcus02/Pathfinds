@@ -4,7 +4,6 @@ const getShortestPath = (endNode: INode) => {
   const shortestPath = [];
   let currentNode: INode | null = endNode;
   while (currentNode) {
-    console.table(currentNode.col, currentNode.row);
     shortestPath.unshift(currentNode);
     currentNode = currentNode.previousNode;
   }
