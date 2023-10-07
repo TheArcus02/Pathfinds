@@ -20,6 +20,8 @@ interface IConfigMenu {
   setSelectedTool: React.Dispatch<React.SetStateAction<Tools>>;
   weight: number;
   setWeight: React.Dispatch<React.SetStateAction<number>>;
+  animationSpeed: number;
+  setAnimationSpeed: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const ConfigMenu: React.FC<IConfigMenu> = ({
@@ -32,6 +34,8 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
   weight,
   setWeight,
   generateMaze,
+  animationSpeed,
+  setAnimationSpeed,
 }) => {
   const algorithms: Algorithms[] = ['dijkstra', 'astar', 'dfs', 'bfs'];
   const tools: Tools[] = ['Walls', 'Weight', 'Eraser'];
@@ -121,6 +125,27 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
                     <span className='m-auto text-2xl font-thin'>+</span>
                   </button>
                 </div>
+              </div>
+            </div>
+            <div className='col-span-3 md:col-span-2'>
+              <div className='w-full text-gray-100 text-sm font-semibold mb-1'>
+                Animation Speed
+              </div>
+              <div>
+                <div className='flex justify-between text-gray-100 text-sm'>
+                  <div>Fast</div>
+                  <div>Slow</div>
+                </div>
+                <input
+                  type='range'
+                  min='1'
+                  max='100'
+                  value={animationSpeed}
+                  onChange={(e) =>
+                    setAnimationSpeed(Math.abs(parseInt(e.target.value)))
+                  }
+                  className='w-full'
+                />
               </div>
             </div>
           </div>

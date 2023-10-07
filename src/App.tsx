@@ -33,7 +33,7 @@ const App = () => {
   const [canRun, setCanRun] = useState(true);
   const [selectedTool, setSelectedTool] = useState<Tools>('Walls');
   const [currentWeight, setCurrentWeight] = useState(1);
-
+  const [animationSpeed, setAnimationSpeed] = useState(50);
   const windowWidth = useWindowSize();
 
   useEffect(() => {
@@ -101,6 +101,8 @@ const App = () => {
         setSelectedTool={setSelectedTool}
         weight={currentWeight}
         setWeight={setCurrentWeight}
+        animationSpeed={animationSpeed}
+        setAnimationSpeed={setAnimationSpeed}
       />
       <div className='w-full'>
         <div className='flex flex-col items-center'>
@@ -115,6 +117,7 @@ const App = () => {
                   handleMouseDown={handleMouseDown}
                   handleMouseEnter={handleMouseEnter}
                   handleMouseUp={() => setMouseIsPressed(false)}
+                  animationSpeed={animationSpeed}
                 />
               ))}
             </div>

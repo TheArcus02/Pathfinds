@@ -20,6 +20,7 @@ interface INodeComponent {
   handleMouseDown: (node: INode) => void;
   handleMouseEnter: (node: INode) => void;
   handleMouseUp: () => void;
+  animationSpeed: number;
 }
 
 const Node: React.FC<INodeComponent> = ({
@@ -29,9 +30,9 @@ const Node: React.FC<INodeComponent> = ({
   handleMouseDown,
   handleMouseEnter,
   handleMouseUp,
+  animationSpeed, // higher is slower
 }) => {
   const dispatch = useDispatch();
-  const animationSpeed = 100; // higher is slower
   const [classes, setClasses] = useState('');
 
   useEffect(() => {
