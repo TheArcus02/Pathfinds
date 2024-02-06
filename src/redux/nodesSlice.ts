@@ -2,74 +2,56 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { cloneDeep } from 'lodash';
-import { Algorithms, ColAndRow, INode, NodesState } from '../utils/interfaces';
+import { Algorithms, ColAndRow, INode } from '../utils/interfaces';
 import dijkstraAlgorithm from '../algorithms/dijkstra';
 import getShortestPath from '../algorithms/shortestPath';
-import { getMaxCols } from '../utils/utils';
 import bfsAlgorithm from '../algorithms/bfs';
 import dfsAlgorithm from '../algorithms/dfs';
 import astarAlgorithm from '../algorithms/astar';
 import generateMaze from '../algorithms/mazeGenerator';
+import { fetchInitialBoard } from './thunk';
 
-const START_ROW = 20;
-const FINISH_ROW = 20;
-const TOTAL_ROWS = 45;
+interface InitialState {
+  nodes: INode[][];
+  startNode: ColAndRow | undefined;
+  endNode: ColAndRow | undefined;
+  loading: boolean;
+  error: string | null;
+}
 
-const generateNode = (
-  col: number,
-  row: number,
-  START_COL: number,
-  FINISH_COL: number,
-) => {
-  const node: INode = {
-    col,
-    row,
-    isStart: row === START_ROW && col === START_COL,
-    isFinish: row === FINISH_ROW && col === FINISH_COL,
-    distance: Infinity,
-    heuristic: Infinity,
-    isVisited: false,
-    whenVisited: 0,
-    isWall: false,
-    previousNode: null,
-    isPath: false,
-    weight: 0,
-  };
-  return node;
+const initialState: InitialState = {
+  nodes: [],
+  startNode: undefined,
+  endNode: undefined,
+  loading: false,
+  error: null,
 };
-
-const getInitialState = () => {
-  const TOTAL_COLS = getMaxCols();
-  const FINISH_COL = Math.floor(TOTAL_COLS / 2);
-  const START_COL = Math.floor(TOTAL_COLS / 2) - 3;
-  return {
-    nodes: [...Array(TOTAL_ROWS).keys()].map((row) =>
-      [
-        ...Array(TOTAL_COLS > FINISH_COL ? TOTAL_COLS : FINISH_COL + 1).keys(),
-      ].map((col) => generateNode(col, row, START_COL, FINISH_COL)),
-    ),
-    startNode: {
-      row: START_ROW,
-      col: START_COL,
-    },
-    endNode: {
-      row: FINISH_ROW,
-      col: FINISH_COL,
-    },
-  };
-};
-
-const initialState: NodesState = getInitialState();
 
 export const nodesSlice = createSlice({
   name: 'nodes',
   initialState,
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchInitialBoard.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchInitialBoard.fulfilled, (state, action) => {
+        state.nodes = action.payload.nodes;
+        state.startNode = action.payload.startNode;
+        state.endNode = action.payload.endNode;
+        state.loading = false;
+      })
+      .addCase(fetchInitialBoard.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+  },
   reducers: {
-    clearBoard: () => getInitialState(),
-
     changeStart: (state, action: PayloadAction<ColAndRow>) => {
       const { col, row } = action.payload;
       const { nodes, startNode } = state;
+      
+      if(!startNode || !nodes) return;
 
       const prevStart = nodes[startNode.row][startNode.col];
       const newStart = nodes[row][col];
@@ -82,6 +64,8 @@ export const nodesSlice = createSlice({
     changeFinish: (state, action: PayloadAction<ColAndRow>) => {
       const { col, row } = action.payload;
       const { nodes, endNode } = state;
+
+      if(!endNode || !nodes) return;
 
       const prevStart = nodes[endNode.row][endNode.col];
       const newStart = nodes[row][col];
@@ -113,6 +97,8 @@ export const nodesSlice = createSlice({
       const { startNode, nodes, endNode } = state;
       const algorithm = action.payload;
 
+      if(!startNode || !endNode || !nodes) return;
+
       const pickAlgorithm = (algo: Algorithms) => {
         if (algo === 'dijkstra')
           return dijkstraAlgorithm(cloneDeep(nodes), startNode);
@@ -133,12 +119,16 @@ export const nodesSlice = createSlice({
 
     runGenerateMaze: (state) => {
       const { nodes, startNode, endNode } = state;
+      if(!startNode || !endNode || !nodes) return;
       const newNodes = generateMaze(cloneDeep(nodes), startNode, endNode);
       state.nodes = newNodes;
     },
 
     setPath: (state) => {
       const { nodes, endNode } = state;
+      
+      if(!endNode || !nodes) return;
+
       const finishNode = nodes[endNode.row][endNode.col];
 
       if (finishNode.previousNode) {
@@ -164,7 +154,6 @@ export const nodesSlice = createSlice({
 });
 
 export const {
-  clearBoard,
   changeStart,
   changeFinish,
   toggleWall,

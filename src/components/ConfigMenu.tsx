@@ -22,6 +22,7 @@ interface IConfigMenu {
   setWeight: React.Dispatch<React.SetStateAction<number>>;
   animationSpeed: number;
   setAnimationSpeed: React.Dispatch<React.SetStateAction<number>>;
+  loading: boolean;
 }
 
 const ConfigMenu: React.FC<IConfigMenu> = ({
@@ -36,6 +37,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
   generateMaze,
   animationSpeed,
   setAnimationSpeed,
+  loading,
 }) => {
   const algorithms: Algorithms[] = ['dijkstra', 'astar', 'dfs', 'bfs'];
   const tools: Tools[] = ['Walls', 'Weight', 'Eraser'];
@@ -64,7 +66,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
                 action={() => setSelectedAlgorithm(algo)}
                 hoverColor='zinc-800'
                 textColor='gray-100'
-                disabled={algo === selectedAlgorithm}
+                disabled={loading || algo === selectedAlgorithm}
                 disabledColor='zinc-700'
                 text={algo.charAt(0).toUpperCase() + algo.slice(1)}
                 key={algo}
@@ -88,7 +90,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
                 iconColor='gray-100'
                 action={() => setSelectedTool(tool)}
                 text={tool.charAt(0).toUpperCase() + tool.slice(1)}
-                disabled={selectedTool === tool}
+                disabled={loading || selectedTool === tool}
                 HideTextOnSm
                 key={tool}
               />
@@ -162,7 +164,7 @@ const ConfigMenu: React.FC<IConfigMenu> = ({
               iconSize='23px'
               action={() => callAlgorithm(selectedAlgorithm)}
               hoverColor='green-400'
-              disabled={!canRun}
+              disabled={loading || !canRun}
               text='Run'
               textColor='gray-100'
               HideTextOnSm

@@ -14,6 +14,8 @@ export interface INode {
   foundBy?: ColAndRow;
 }
 
+export type ColAndRow = Pick<INode, 'col' | 'row'>;
+
 export interface DraggableNode {
   col: number;
   row: number;
@@ -23,7 +25,6 @@ export interface DraggableNode {
   };
 }
 
-export type ColAndRow = Pick<INode, 'col' | 'row'>;
 export interface NodesState {
   nodes: INode[][];
   startNode: ColAndRow;
@@ -31,6 +32,5 @@ export interface NodesState {
 }
 
 export type DraggableElements = 'startNode' | 'endNode';
-
 export type Algorithms = 'dijkstra' | 'bfs' | 'astar' | 'dfs';
 export type Tools = 'Walls' | 'Weight' | 'Eraser';

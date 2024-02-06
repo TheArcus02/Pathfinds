@@ -1,9 +1,9 @@
 import { INode } from './interfaces';
+import { COL_WIDTH } from './constants';
 
 export const getMaxCols = () => {
-  const colWidth = 26; // 26px x 26px
-  const screenWidth = document.body.offsetWidth;
-  return Math.floor(screenWidth / colWidth);
+  const screenWidth = document.body.offsetWidth || window.innerWidth;
+  return Math.floor(screenWidth / COL_WIDTH);
 };
 
 export const getClosestNodes = (node: INode, nodes: INode[][]) => {

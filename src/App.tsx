@@ -9,11 +9,11 @@ import {
   Tools,
 } from './utils/interfaces';
 import Node from './components/Node';
-import { RootState } from './redux/store';
+import { AppDispatch, RootState } from './redux/store';
 import {
   changeFinish,
   changeStart,
-  clearBoard,
+  // clearBoard,
   clearPath,
   resetNode,
   runAlgorithm,
@@ -22,10 +22,13 @@ import {
   runGenerateMaze,
 } from './redux/nodesSlice';
 import useWindowSize from './hooks/useWindowSize';
+import { fetchInitialBoard } from './redux/thunk';
 
 const App = () => {
   const nodes = useSelector((state: RootState) => state.nodes.nodes);
-  const dispatch = useDispatch();
+  const loading = useSelector((state: RootState) => state.nodes.loading);
+
+  const dispatch = useDispatch<AppDispatch>();
 
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
   const [draggedElement, setDraggedElement] =
@@ -37,7 +40,7 @@ const App = () => {
   const windowWidth = useWindowSize();
 
   useEffect(() => {
-    dispatch(clearBoard());
+    dispatch(fetchInitialBoard());
   }, [windowWidth, dispatch]);
 
   const handleDrop = (
@@ -56,7 +59,7 @@ const App = () => {
   };
 
   const handleClearBoard = () => {
-    dispatch(clearBoard());
+    dispatch(fetchInitialBoard());
     setCanRun(true);
   };
 
@@ -103,25 +106,28 @@ const App = () => {
         setWeight={setCurrentWeight}
         animationSpeed={animationSpeed}
         setAnimationSpeed={setAnimationSpeed}
+        loading={loading}
       />
       <div className='w-full'>
         <div className='flex flex-col items-center'>
-          {nodes.map((row) => (
-            <div className='flex'>
-              {row.map((node) => (
-                <Node
-                  node={node}
-                  key={node.col + node.row}
-                  handleDrop={handleDrop}
-                  setDraggedElement={setDraggedElement}
-                  handleMouseDown={handleMouseDown}
-                  handleMouseEnter={handleMouseEnter}
-                  handleMouseUp={() => setMouseIsPressed(false)}
-                  animationSpeed={animationSpeed}
-                />
-              ))}
-            </div>
-          ))}
+          {!loading &&
+            nodes &&
+            nodes.map((row) => (
+              <div className='flex'>
+                {row.map((node) => (
+                  <Node
+                    node={node}
+                    key={node.col + node.row}
+                    handleDrop={handleDrop}
+                    setDraggedElement={setDraggedElement}
+                    handleMouseDown={handleMouseDown}
+                    handleMouseEnter={handleMouseEnter}
+                    handleMouseUp={() => setMouseIsPressed(false)}
+                    animationSpeed={animationSpeed}
+                  />
+                ))}
+              </div>
+            ))}
         </div>
       </div>
     </div>
