@@ -3,6 +3,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { Algorithms, ColAndRow, INode } from '../utils/interfaces';
 import { getMaxCols } from '../utils/utils';
+import { RootState } from './store';
 
 interface FetchBoardParams {
   start: ColAndRow;
@@ -31,7 +32,7 @@ export const fetchInitialBoard = createAsyncThunk(
 
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/board`,
-        data,
+        data
       );
       return response.data;
     } catch (error: any) {
@@ -40,33 +41,60 @@ export const fetchInitialBoard = createAsyncThunk(
       }
       return rejectWithValue(error.message);
     }
-  },
+  }
 );
 
-interface RunAlgorithmParams {
-  algorithm: Algorithms;
-  startNode: ColAndRow;
-  endNode: ColAndRow;
-  nodes: INode[][];
-}
-
-export const runAlgorithm = createAsyncThunk(
+export const runAlgorithm = createAsyncThunk<
+  Array<INode>, // Return type of the fulfilled action
+  { algorithm: Algorithms }, // Argument type for the thunk
+  {
+    state: RootState, // Type of the Redux state
+    rejectValue: string, // Type for the rejection value
+  }
+>(
   'nodes/runAlgorithm',
-  async (
-    { algorithm, startNode, endNode, nodes }: RunAlgorithmParams,
-    { rejectWithValue },
-  ) => {
+  async ({ algorithm }, { rejectWithValue, getState }) => {
     try {
-      const res = await axios.post(
+      const state = getState();
+      const { startNode, endNode, nodes } = state.nodes;
+
+      const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/${algorithm}`,
-        { startNode, endNode, nodes },
+        { startNode, endNode, nodes }
       );
-      return res.data;
+
+      return response.data;
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
         return rejectWithValue(error.response.data);
       }
       return rejectWithValue(error.message);
     }
-  },
+  }
 );
+
+export const fetchMaze = createAsyncThunk<
+  INode[][],
+  void,
+  {
+    state: RootState,
+    rejectValue: string,
+  }
+>('nodes/fetchMaze', async (_, { rejectWithValue, getState }) => {
+  try {
+    const state = getState();
+    const { nodes } = state.nodes;
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/api/maze`,
+      { nodes }
+    );
+    return response.data;
+  } catch (error: any) {
+    if (axios.isAxiosError(error) && error.response) {
+      // Make sure to correctly handle and return the error payload
+      return rejectWithValue(error.response.data);
+    }
+    return rejectWithValue(error.message);
+  }
+});

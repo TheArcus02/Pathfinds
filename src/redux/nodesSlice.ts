@@ -1,17 +1,11 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { cloneDeep } from 'lodash';
 import { ColAndRow, INode } from '../utils/interfaces';
-// import dijkstraAlgorithm from '../algorithms/dijkstra';
 import getShortestPath from '../algorithms/shortestPath';
-// import bfsAlgorithm from '../algorithms/bfs';
-// import dfsAlgorithm from '../algorithms/dfs';
-// import astarAlgorithm from '../algorithms/astar';
-import generateMaze from '../algorithms/mazeGenerator';
-import { fetchInitialBoard, runAlgorithm } from './thunk';
+import { fetchInitialBoard, fetchMaze, runAlgorithm } from './thunk';
 
-interface InitialState {
+export interface NodesSliceState {
   nodes: INode[][];
   startNode: ColAndRow | undefined;
   endNode: ColAndRow | undefined;
@@ -19,7 +13,8 @@ interface InitialState {
   error: string | null;
 }
 
-const initialState: InitialState = {
+
+const initialState: NodesSliceState = {
   nodes: [],
   startNode: undefined,
   endNode: undefined,
@@ -58,6 +53,17 @@ export const nodesSlice = createSlice({
         state.loading = false;
       })
       .addCase(runAlgorithm.rejected, (state, action) => {
+        state.error = action.payload as string;
+        state.loading = false;
+      })
+      .addCase(fetchMaze.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchMaze.fulfilled, (state, action) => {
+        state.nodes = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchMaze.rejected, (state, action) => {
         state.error = action.payload as string;
         state.loading = false;
       })
@@ -106,38 +112,8 @@ export const nodesSlice = createSlice({
 
     resetNode: (state, action: PayloadAction<ColAndRow>) => {
       const { col, row } = action.payload;
-      state.nodes[row][col] = initialState.nodes[row][col];
-    },
-
-    // runAlgorithm: (state, action: PayloadAction<Algorithms>) => {
-    //   const { startNode, nodes, endNode } = state;
-    //   const algorithm = action.payload;
-
-    //   if(!startNode || !endNode || !nodes) return;
-
-    //   const pickAlgorithm = (algo: Algorithms) => {
-    //     if (algo === 'dijkstra')
-    //       return dijkstraAlgorithm(cloneDeep(nodes), startNode);
-    //     if (algo === 'bfs') return bfsAlgorithm(cloneDeep(nodes), startNode);
-    //     if (algo === 'dfs') return dfsAlgorithm(cloneDeep(nodes), startNode);
-    //     if (algo === 'astar')
-    //       return astarAlgorithm(cloneDeep(nodes), startNode, endNode);
-    //     return undefined;
-    //   };
-
-      // const nodesVisitedInOrder = pickAlgorithm(algorithm);
-      // if (nodesVisitedInOrder?.length) {
-      //   nodesVisitedInOrder.forEach((node) => {
-      //     nodes[node.row][node.col] = node;
-      //   });
-      // }
-    // },
-
-    runGenerateMaze: (state) => {
-      const { nodes, startNode, endNode } = state;
-      if(!startNode || !endNode || !nodes) return;
-      const newNodes = generateMaze(cloneDeep(nodes), startNode, endNode);
-      state.nodes = newNodes;
+      state.nodes[row][col].isWall = false;
+      state.nodes[row][col].weight = 0;
     },
 
     setPath: (state) => {
@@ -176,6 +152,5 @@ export const {
   clearPath,
   resetNode,
   setWeight,
-  runGenerateMaze,
 } = nodesSlice.actions;
 export default nodesSlice.reducer;

@@ -5,5 +5,5 @@
 	"jsxSingleQuote": true,
 	"endOfLine": "auto",
 	"parser": "flow",
-	"trailingComma": "all"
+	"trailingComma": "es5"
 }

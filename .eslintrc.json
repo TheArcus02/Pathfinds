@@ -10,7 +10,8 @@
     "plugin:react-hooks/recommended",
     "plugin:import/recommended",
     "plugin:import/typescript",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "prettier"
   ],
   "overrides": [],
   "parser": "@typescript-eslint/parser",
@@ -46,8 +47,12 @@
       { "namedComponents": "arrow-function" }
     ],
     "react-destructing-assignment": "off",
-    "prettier/prettier": "warn",
+    "prettier/prettier": [
+      "warn", {
+        "trailingComma": "es5"
+      }
+    ],
     "@typescript-eslint/no-unused-vars": "warn",
-    "react/prop-types": 0
+    "react/prop-types": 0,
   }
 }

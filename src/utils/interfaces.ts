@@ -1,3 +1,5 @@
+import nodesSlice from '../redux/nodesSlice';
+
 export interface INode {
   col: number;
   row: number;
