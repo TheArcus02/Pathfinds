@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { ColAndRow } from '../utils/interfaces';
+import { Algorithms, ColAndRow, INode } from '../utils/interfaces';
 import { getMaxCols } from '../utils/utils';
 
 interface FetchBoardParams {
@@ -35,7 +35,38 @@ export const fetchInitialBoard = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response.data);
+      if (axios.isAxiosError(error) && error.response) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+interface RunAlgorithmParams {
+  algorithm: Algorithms;
+  startNode: ColAndRow;
+  endNode: ColAndRow;
+  nodes: INode[][];
+}
+
+export const runAlgorithm = createAsyncThunk(
+  'nodes/runAlgorithm',
+  async (
+    { algorithm, startNode, endNode, nodes }: RunAlgorithmParams,
+    { rejectWithValue },
+  ) => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/${algorithm}`,
+        { startNode, endNode, nodes },
+      );
+      return res.data;
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue(error.message);
     }
   },
 );

@@ -2,14 +2,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { cloneDeep } from 'lodash';
-import { Algorithms, ColAndRow, INode } from '../utils/interfaces';
-import dijkstraAlgorithm from '../algorithms/dijkstra';
+import { ColAndRow, INode } from '../utils/interfaces';
+// import dijkstraAlgorithm from '../algorithms/dijkstra';
 import getShortestPath from '../algorithms/shortestPath';
-import bfsAlgorithm from '../algorithms/bfs';
-import dfsAlgorithm from '../algorithms/dfs';
-import astarAlgorithm from '../algorithms/astar';
+// import bfsAlgorithm from '../algorithms/bfs';
+// import dfsAlgorithm from '../algorithms/dfs';
+// import astarAlgorithm from '../algorithms/astar';
 import generateMaze from '../algorithms/mazeGenerator';
-import { fetchInitialBoard } from './thunk';
+import { fetchInitialBoard, runAlgorithm } from './thunk';
 
 interface InitialState {
   nodes: INode[][];
@@ -44,7 +44,23 @@ export const nodesSlice = createSlice({
       .addCase(fetchInitialBoard.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-      });
+      })
+      .addCase(runAlgorithm.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(runAlgorithm.fulfilled, (state, action) => {
+        if (action.payload?.length) {
+          action.payload.forEach((node: INode) => {
+            state.nodes[node.row][node.col] = node;
+          });
+        }
+        
+        state.loading = false;
+      })
+      .addCase(runAlgorithm.rejected, (state, action) => {
+        state.error = action.payload as string;
+        state.loading = false;
+      })
   },
   reducers: {
     changeStart: (state, action: PayloadAction<ColAndRow>) => {
@@ -93,29 +109,29 @@ export const nodesSlice = createSlice({
       state.nodes[row][col] = initialState.nodes[row][col];
     },
 
-    runAlgorithm: (state, action: PayloadAction<Algorithms>) => {
-      const { startNode, nodes, endNode } = state;
-      const algorithm = action.payload;
+    // runAlgorithm: (state, action: PayloadAction<Algorithms>) => {
+    //   const { startNode, nodes, endNode } = state;
+    //   const algorithm = action.payload;
 
-      if(!startNode || !endNode || !nodes) return;
+    //   if(!startNode || !endNode || !nodes) return;
 
-      const pickAlgorithm = (algo: Algorithms) => {
-        if (algo === 'dijkstra')
-          return dijkstraAlgorithm(cloneDeep(nodes), startNode);
-        if (algo === 'bfs') return bfsAlgorithm(cloneDeep(nodes), startNode);
-        if (algo === 'dfs') return dfsAlgorithm(cloneDeep(nodes), startNode);
-        if (algo === 'astar')
-          return astarAlgorithm(cloneDeep(nodes), startNode, endNode);
-        return undefined;
-      };
+    //   const pickAlgorithm = (algo: Algorithms) => {
+    //     if (algo === 'dijkstra')
+    //       return dijkstraAlgorithm(cloneDeep(nodes), startNode);
+    //     if (algo === 'bfs') return bfsAlgorithm(cloneDeep(nodes), startNode);
+    //     if (algo === 'dfs') return dfsAlgorithm(cloneDeep(nodes), startNode);
+    //     if (algo === 'astar')
+    //       return astarAlgorithm(cloneDeep(nodes), startNode, endNode);
+    //     return undefined;
+    //   };
 
-      const nodesVisitedInOrder = pickAlgorithm(algorithm);
-      if (nodesVisitedInOrder?.length) {
-        nodesVisitedInOrder.forEach((node) => {
-          nodes[node.row][node.col] = node;
-        });
-      }
-    },
+      // const nodesVisitedInOrder = pickAlgorithm(algorithm);
+      // if (nodesVisitedInOrder?.length) {
+      //   nodesVisitedInOrder.forEach((node) => {
+      //     nodes[node.row][node.col] = node;
+      //   });
+      // }
+    // },
 
     runGenerateMaze: (state) => {
       const { nodes, startNode, endNode } = state;
@@ -126,7 +142,6 @@ export const nodesSlice = createSlice({
 
     setPath: (state) => {
       const { nodes, endNode } = state;
-      
       if(!endNode || !nodes) return;
 
       const finishNode = nodes[endNode.row][endNode.col];
@@ -157,7 +172,6 @@ export const {
   changeStart,
   changeFinish,
   toggleWall,
-  runAlgorithm,
   setPath,
   clearPath,
   resetNode,
