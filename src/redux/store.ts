@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import nodesSlice from './nodesSlice';
+import toolsSlice from './toolsSlice';
 
 export const store = configureStore({
   reducer: {
     nodes: nodesSlice,
+    tools: toolsSlice,
   },
   devTools: true,
 });

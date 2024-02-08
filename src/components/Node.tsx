@@ -1,107 +1,103 @@
 /* eslint-disable no-nested-ternary */
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { memo, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { VscDebugStart } from 'react-icons/vsc';
 import { FaFlagCheckered, FaWeightHanging } from 'react-icons/fa';
 import { GiBrickWall } from 'react-icons/gi';
 import { DraggableElements, INode } from '../utils/interfaces';
-import { setPath } from '../redux/nodesSlice';
+import { changeNodePosition, setPath } from '../redux/nodesSlice';
+import { AppDispatch, RootState } from '../redux/store';
 
-interface INodeComponent {
+interface NodeProps {
   node: INode;
-  setDraggedElement: (
-    value: React.SetStateAction<DraggableElements | null>,
+  handleMouse: (e: React.MouseEvent<HTMLDivElement, MouseEvent>, row: number, col: number) => void
+  onDragStart: (
+    e: React.DragEvent<HTMLDivElement>,
+    element: DraggableElements
   ) => void;
-  handleDrop: (
+  onDrop: (
     e: React.DragEvent<HTMLDivElement>,
     row: number,
-    col: number,
+    col: number
   ) => void;
-  handleMouseDown: (node: INode) => void;
-  handleMouseEnter: (node: INode) => void;
-  handleMouseUp: () => void;
-  animationSpeed: number;
 }
 
-const Node: React.FC<INodeComponent> = ({
-  node,
-  setDraggedElement,
-  handleDrop,
-  handleMouseDown,
-  handleMouseEnter,
-  handleMouseUp,
-  animationSpeed, // higher is slower
-}) => {
-  const dispatch = useDispatch();
+const areEqual = (prevProps: NodeProps, nextProps: NodeProps) => {
+  return (
+    prevProps.node.isVisited === nextProps.node.isVisited &&
+    prevProps.node.isPath === nextProps.node.isPath &&
+    prevProps.node.weight === nextProps.node.weight &&
+    prevProps.node.isFinish === nextProps.node.isFinish &&
+    prevProps.node.isStart === nextProps.node.isStart &&
+    prevProps.node.isWall === nextProps.node.isWall
+  );
+};
+
+const Node = memo(({ node, handleMouse, onDrop, onDragStart }: NodeProps) => {
+  console.log('Node rendered', node.row, node.col);
+  const animationSpeed = useSelector(
+    (state: RootState) => state.tools.animationSpeed
+  );
+
   const [classes, setClasses] = useState('');
 
+  const dispatch = useDispatch<AppDispatch>();
+
+  const animatePath = () => {
+    return setTimeout(() => {
+      setClasses('bg-indigo-700');
+    }, animationSpeed * node.distance);
+  };
+
+  const animateVisited = () => {
+    return setTimeout(() => {
+      setClasses('bg-emerald-500 animate-visited');
+      if (node.isFinish) {
+        dispatch(setPath());
+      }
+    }, animationSpeed * node.whenVisited);
+  };
+
   useEffect(() => {
-    let timeout: number | null = null;
+    let pathTimeout: number;
+    let visitedTimeout: number;
+
+    setClasses('');
 
     if (node.isPath) {
-      // setting timeout for animation
-      timeout = setTimeout(() => {
-        setClasses('bg-indigo-700');
-      }, animationSpeed * node.distance);
+      pathTimeout = animatePath();
     } else if (node.isVisited) {
-      // setting timeout for animation
-      timeout = setTimeout(() => {
-        setClasses('bg-emerald-500 animate-visited');
-        // check if animation ended and start animating path
-        if (node.isFinish) {
-          dispatch(setPath());
-        }
-      }, animationSpeed * node.whenVisited);
-    } else {
-      setClasses('');
+      visitedTimeout = animateVisited();
     }
+
     return () => {
-      if (timeout) clearTimeout(timeout);
+      clearTimeout(pathTimeout);
+      clearTimeout(visitedTimeout);
     };
-  }, [
-    node.isFinish,
-    node.isVisited,
-    node.isPath,
-    node.isWall,
-    node.isStart,
-    node.distance,
-    node.row,
-    node.col,
-    node.whenVisited,
-    dispatch,
-  ]);
+  }, [node]);
 
   return (
     <div
       id={`${node.row}-${node.col}`}
       aria-label={`${node.row}-${node.col}`}
       className={`border border-solid border-slate-600 p-3 relative ${classes}`}
-      onMouseDown={() => handleMouseDown(node)}
-      onMouseEnter={() => handleMouseEnter(node)}
-      onMouseUp={() => handleMouseUp()}
+      onMouseDown={(e) => handleMouse(e, node.col, node.row)}
+      onMouseEnter={(e) => handleMouse(e, node.col, node.row)}
       role='gridcell'
       tabIndex={0}
-      onDrop={(e) => handleDrop(e, node.row, node.col)}
+      onDrop={(e) => onDrop(e, node.row, node.col)}
       onDragOver={(e) => e.preventDefault()}
       onDragEnter={(e) => e.preventDefault()}
     >
       {node.isStart ? (
-        <div
-          draggable
-          onDragStart={() => setDraggedElement('startNode')}
-          onDragEnd={() => setDraggedElement(null)}
-        >
+        <div draggable onDragStart={(e) => onDragStart(e, 'startNode')}>
           <VscDebugStart
             size='26px'
             className='text-white bg-sky-600 absolute cursor-pointer left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
           />
         </div>
       ) : node.isFinish ? (
-        <div
-          draggable
-          onDragStart={() => setDraggedElement('endNode')}
-          onDragEnd={() => setDraggedElement(null)}
-        >
+        <div draggable onDragStart={(e) => onDragStart(e, 'endNode')}>
           <FaFlagCheckered
             size='26px'
             className='text-white bg-rose-600 absolute cursor-pointer left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
@@ -129,6 +125,6 @@ const Node: React.FC<INodeComponent> = ({
       )}
     </div>
   );
-};
+}, areEqual);
 
 export default Node;

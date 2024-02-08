@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Algorithms, ColAndRow, INode } from '../utils/interfaces';
 import { getMaxCols } from '../utils/utils';
 import { RootState } from './store';
+import { resetNode, setWeight, toggleWall } from './nodesSlice';
 
 interface FetchBoardParams {
   start: ColAndRow;
@@ -96,5 +97,24 @@ export const fetchMaze = createAsyncThunk<
       return rejectWithValue(error.response.data);
     }
     return rejectWithValue(error.message);
+  }
+});
+
+export const useTool = createAsyncThunk<
+  void,
+  { row: number, col: number },
+  {
+    state: RootState,
+  }
+>('tools/useTool', async ({ row, col }, { getState, dispatch }) => {
+  const state = getState();
+  const { selectedTool, currentWeight } = state.tools;
+
+  if (selectedTool === 'Walls') {
+    dispatch(toggleWall({ row, col }));
+  } else if (selectedTool === 'Eraser') {
+    dispatch(resetNode({ row, col }));
+  } else if (selectedTool === 'Weight') {
+    dispatch(setWeight({ row, col, weight: currentWeight }));
   }
 });

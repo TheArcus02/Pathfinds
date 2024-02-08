@@ -1,31 +1,31 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RiToolsFill } from 'react-icons/ri';
 import { GiBrickWall } from 'react-icons/gi';
 import { FaEraser, FaWeightHanging } from 'react-icons/fa';
 import ActionButton from './ActionButton';
 import { Tools } from '../utils/interfaces';
-import { RootState } from '../redux/store';
+import { AppDispatch, RootState } from '../redux/store';
+import {
+  changeAnimationSpeed,
+  changeCurrentWeight,
+  changeSelectedTool,
+  decrementWeight,
+  incrementWeight,
+} from '../redux/toolsSlice';
 
-interface ToolsPanelProps {
-  selectedTool: Tools;
-  setSelectedTool: React.Dispatch<React.SetStateAction<Tools>>;
-  setWeight: React.Dispatch<React.SetStateAction<number>>;
-  weight: number;
-  animationSpeed: number;
-  setAnimationSpeed: React.Dispatch<React.SetStateAction<number>>;
-}
-
-const ToolsPanel = ({
-  selectedTool,
-  setSelectedTool,
-  animationSpeed,
-  setAnimationSpeed,
-  setWeight,
-  weight,
-}: ToolsPanelProps) => {
+const ToolsPanel = () => {
   const tools: Tools[] = ['Walls', 'Weight', 'Eraser'];
 
   const loading = useSelector((state: RootState) => state.nodes.loading);
+  const selectedTool = useSelector(
+    (state: RootState) => state.tools.selectedTool
+  );
+  const animationSpeed = useSelector(
+    (state: RootState) => state.tools.animationSpeed
+  );
+  const weight = useSelector((state: RootState) => state.tools.currentWeight);
+
+  const dispatch = useDispatch<AppDispatch>();
 
   const getToolIcon = (tool: Tools) => {
     if (tool === 'Walls') return GiBrickWall;
@@ -49,7 +49,7 @@ const ToolsPanel = ({
             Icon={getToolIcon(tool)}
             iconSize='23px'
             iconColor='gray-100'
-            action={() => setSelectedTool(tool)}
+            action={() => dispatch(changeSelectedTool(tool))}
             text={tool.charAt(0).toUpperCase() + tool.slice(1)}
             disabled={loading || selectedTool === tool}
             HideTextOnSm
@@ -67,7 +67,7 @@ const ToolsPanel = ({
             <div className='flex flex-row w-1 md:w-20 rounded-lg'>
               <button
                 type='button'
-                onClick={() => setWeight((state) => state - 1)}
+                onClick={() => dispatch(decrementWeight())}
                 className=' bg-zinc-700 text-gray-100 hover:text-gray-200 hover:bg-zinc-600 h-full px-1 rounded-l cursor-pointer outline-none'
               >
                 <span className='m-auto text-2xl font-thin'>−</span>
@@ -78,11 +78,13 @@ const ToolsPanel = ({
                 className='text-center min-w-[15px] w-full bg-zinc-500 font-semibold text-md hover:text-gray-300 focus:text-gray-100  md:text-basecursor-default flex items-center text-gray-100  outline-none'
                 name='custom-input-number'
                 value={weight}
-                onChange={(e) => setWeight(parseInt(e.target.value, 10))}
+                onChange={(e) =>
+                  dispatch(changeCurrentWeight(parseInt(e.target.value, 10)))
+                }
               />
               <button
                 type='button'
-                onClick={() => setWeight((state) => state + 1)}
+                onClick={() => dispatch(incrementWeight())}
                 className='bg-zinc-700 text-gray-100 hover:text-gray-200 hover:bg-zinc-600 h-full px-1 rounded-r cursor-pointer'
               >
                 <span className='m-auto text-2xl font-thin'>+</span>
@@ -105,7 +107,9 @@ const ToolsPanel = ({
               max='100'
               value={animationSpeed}
               onChange={(e) =>
-                setAnimationSpeed(Math.abs(parseInt(e.target.value, 10)))
+                dispatch(
+                  changeAnimationSpeed(Math.abs(parseInt(e.target.value, 10)))
+                )
               }
               className='w-full'
             />

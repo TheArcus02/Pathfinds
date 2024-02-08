@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { ColAndRow, INode } from '../utils/interfaces';
+import { ColAndRow, DraggableElements, INode } from '../utils/interfaces';
 import getShortestPath from '../algorithms/shortestPath';
 import { fetchInitialBoard, fetchMaze, runAlgorithm } from './thunk';
 
@@ -96,6 +96,27 @@ export const nodesSlice = createSlice({
       prevStart.isFinish = false;
       newStart.isFinish = true;
     },
+    changeNodePosition: (state, action: PayloadAction<ColAndRow & {
+      nodeType: DraggableElements;
+    }>) =>{
+      const { col, row, nodeType } = action.payload;
+
+      if(nodeType === 'startNode' && state.startNode){
+        const prevStart = state.nodes[state.startNode.row][state.startNode.col];
+        const newStart = state.nodes[row][col];
+        
+        prevStart.isStart = false;
+        newStart.isStart = true;
+        state.startNode = { col, row };
+      } else if(nodeType === 'endNode' && state.endNode){
+        const prevEnd = state.nodes[state.endNode.row][state.endNode.col];
+        const newEnd = state.nodes[row][col];
+        
+        prevEnd.isFinish = false;
+        newEnd.isFinish = true;
+        state.endNode = { col, row };
+      }
+    },
 
     toggleWall: (state, action: PayloadAction<ColAndRow>) => {
       const { col, row } = action.payload;
@@ -145,8 +166,7 @@ export const nodesSlice = createSlice({
 });
 
 export const {
-  changeStart,
-  changeFinish,
+  changeNodePosition,
   toggleWall,
   setPath,
   clearPath,
