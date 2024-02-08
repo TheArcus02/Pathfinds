@@ -6,7 +6,7 @@ import Node from './components/Node';
 import { AppDispatch, RootState } from './redux/store';
 import useWindowSize from './hooks/useWindowSize';
 import { fetchInitialBoard, useTool } from './redux/thunk';
-import { DraggableElements } from './utils/interfaces';
+import { DraggableElements, INode } from './utils/interfaces';
 import { changeNodePosition } from './redux/nodesSlice';
 
 const App = () => {
@@ -19,7 +19,7 @@ const App = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   // Using ref to prevent re-renders of nodes when mouse is pressed
-  const mouseIsPressed = useRef(false);
+  const mouseIsPressed =  useRef(false);
 
   useEffect(() => {
     const handleMouseDown = () => (mouseIsPressed.current = true);
@@ -53,16 +53,23 @@ const App = () => {
     return () => clearTimeout(timer);
   }, [loading]);
 
-  const handleMouseAction = useCallback(
-    (e:React.MouseEvent<HTMLDivElement, MouseEvent>, col: number, row: number ) => {
-      if(e.type === 'mousedown') {
-        dispatch(useTool({ row, col }));
-      }else if (e.type === 'mouseenter' && mouseIsPressed.current) {
-        dispatch(useTool({ row, col }));
-      }
-    },
-    [dispatch, mouseIsPressed]
-  );
+  const handleMouseDown = (
+    node: INode
+  ) => {
+    if(node.isStart || node.isFinish) return
+    dispatch(useTool({ row: node.row, col: node.col }));
+    mouseIsPressed.current = true; 
+  }
+
+  const handleMouseEnter = (node: INode) => {
+    if(!mouseIsPressed.current || node.isStart || node.isFinish) return;
+    dispatch(useTool({ row: node.row, col: node.col }));
+  }
+
+  const handleMouseUp = () => {
+    mouseIsPressed.current = false;
+  }
+
 
   const handleDragStart = useCallback((
     e: React.DragEvent<HTMLDivElement>,
@@ -108,7 +115,9 @@ const App = () => {
                   <Node
                     node={node}
                     key={`col:${node.col}, row:${node.row}`}
-                    handleMouse={handleMouseAction}
+                    handleMouseDown={handleMouseDown}
+                    handleMouseEnter={handleMouseEnter}
+                    handleMouseUp={handleMouseUp}
                     onDragStart={handleDragStart}
                     onDrop={handleDrop}
                   />
