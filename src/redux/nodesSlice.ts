@@ -69,33 +69,6 @@ export const nodesSlice = createSlice({
       })
   },
   reducers: {
-    changeStart: (state, action: PayloadAction<ColAndRow>) => {
-      const { col, row } = action.payload;
-      const { nodes, startNode } = state;
-      
-      if(!startNode || !nodes) return;
-
-      const prevStart = nodes[startNode.row][startNode.col];
-      const newStart = nodes[row][col];
-
-      state.startNode = action.payload;
-      prevStart.isStart = false;
-      newStart.isStart = true;
-    },
-
-    changeFinish: (state, action: PayloadAction<ColAndRow>) => {
-      const { col, row } = action.payload;
-      const { nodes, endNode } = state;
-
-      if(!endNode || !nodes) return;
-
-      const prevStart = nodes[endNode.row][endNode.col];
-      const newStart = nodes[row][col];
-
-      state.endNode = action.payload;
-      prevStart.isFinish = false;
-      newStart.isFinish = true;
-    },
     changeNodePosition: (state, action: PayloadAction<ColAndRow & {
       nodeType: DraggableElements;
     }>) =>{
@@ -107,6 +80,7 @@ export const nodesSlice = createSlice({
         
         prevStart.isStart = false;
         newStart.isStart = true;
+        newStart.isWall = false;
         state.startNode = { col, row };
       } else if(nodeType === 'endNode' && state.endNode){
         const prevEnd = state.nodes[state.endNode.row][state.endNode.col];
@@ -114,6 +88,7 @@ export const nodesSlice = createSlice({
         
         prevEnd.isFinish = false;
         newEnd.isFinish = true;
+        newEnd.isWall = false;
         state.endNode = { col, row };
       }
     },

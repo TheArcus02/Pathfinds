@@ -43,19 +43,20 @@ const Node = memo(
       (state: RootState) => state.tools.animationSpeed
     );
 
-    const [classes, setClasses] = useState('');
+    const [bgClasses, setBgClasses] = useState('');
+    const [borderClasses, setBorderClasses] = useState(''); 
 
     const dispatch = useDispatch<AppDispatch>();
 
     const animatePath = () => {
       return setTimeout(() => {
-        setClasses('bg-indigo-700');
+        setBgClasses('bg-indigo-700');
       }, animationSpeed * node.distance);
     };
 
     const animateVisited = () => {
       return setTimeout(() => {
-        setClasses('bg-emerald-500 animate-visited');
+        setBgClasses('bg-emerald-500 animate-visited');
         if (node.isFinish) {
           dispatch(setPath());
         }
@@ -66,7 +67,7 @@ const Node = memo(
       let pathTimeout: number;
       let visitedTimeout: number;
 
-      setClasses('');
+      setBgClasses('');
 
       if (node.isPath) {
         pathTimeout = animatePath();
@@ -84,14 +85,21 @@ const Node = memo(
       <div
         id={`${node.row}-${node.col}`}
         aria-label={`${node.row}-${node.col}`}
-        className={`border border-solid border-slate-600 p-3 relative ${classes}`}
+        className={`border border-solid border-slate-600 p-3 relative ${bgClasses} ${borderClasses}`}
         onMouseDown={() => handleMouseDown(node)}
         onMouseEnter={() => handleMouseEnter(node)}
         onMouseUp={() => handleMouseUp()}
         role='gridcell'
         tabIndex={0}
-        onDrop={(e) => onDrop(e, node.row, node.col)}
-        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
+          onDrop(e, node.row, node.col);
+          setBorderClasses('');
+        }}
+        onDragOver={(e) => {
+          e.preventDefault()
+          setBorderClasses('animate-bounce border-dashed border-sky-600')
+        }}
+        onDragLeave={() => setBorderClasses('')}
         onDragEnter={(e) => e.preventDefault()}
       >
         {node.isStart ? (
